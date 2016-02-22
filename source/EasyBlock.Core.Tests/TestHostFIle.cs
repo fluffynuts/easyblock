@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +9,7 @@ using PeanutButter.TestUtils.Generic;
 namespace EasyBlock.Core.Tests
 {
     [TestFixture]
-    public class TestHostFIle
+    public class TestHostFile
     {
         [TestCase("reader", typeof(ITextFileReader))]
         [TestCase("writer", typeof(ITextFileWriter))]
@@ -64,20 +63,5 @@ namespace EasyBlock.Core.Tests
             return new HostFile(reader ?? Substitute.For<ITextFileReader>(), 
                                 writer ?? Substitute.For<ITextFileWriter>());
         }
-    }
-
-    public static class TestExtensionsForTextFileReader
-    {
-        public static void SetData(this ITextFileReader reader, IEnumerable<string> lines)
-        {
-            var queue = new Queue<string>(lines);
-            reader.ReadLine().Returns(ci =>
-            {
-                if (!queue.Any())
-                    return null;
-                return queue.Dequeue();
-            });
-        }
-
     }
 }
