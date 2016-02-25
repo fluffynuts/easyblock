@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ using PeanutButter.TestUtils.Generic;
 namespace EasyBlock.Core.Tests
 {
     [TestFixture]
-    public class TestHostFile
+    public class TestHostFIle
     {
         [TestCase("reader", typeof(ITextFileReader))]
         [TestCase("writer", typeof(ITextFileWriter))]
@@ -57,11 +58,110 @@ namespace EasyBlock.Core.Tests
 
         }
 
+        [Test]
+        [Ignore("TODO")]
+        public void Merge_WhenReaderHasNoLines_ShouldNotChangeLines()
+        {
+            //---------------Set up test pack-------------------
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+
+            //---------------Test Result -----------------------
+
+        }
+
+        [Test]
+        [Ignore("TODO")]
+        public void Merge_WhenReaderHasOneLineWithExistingHost_ShouldChangeLines()
+        {
+            //---------------Set up test pack-------------------
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+
+            //---------------Test Result -----------------------
+
+        }
+
+        [Test]
+        [Ignore("TODO")]
+        public void Merge_WhenReaderHasOneLineWithNewHost_ShouldAddMergeLine()
+        {
+            //---------------Set up test pack-------------------
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+
+            //---------------Test Result -----------------------
+
+        }
+
+        [Test]
+        [Ignore("TODO")]
+        public void Merge_WhenReaderHasTwoLines_AndOneIsNew_AndOneIsKnown_ShouldAddNewLineToMergeLines()
+        {
+            //---------------Set up test pack-------------------
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+
+            //---------------Test Result -----------------------
+
+        }
+
+        [Test]
+        [Ignore("TODO")]
+        public void Persist_WhenHaveNoMergeLines_ShouldOutputToSpecifiedFile()
+        {
+            //---------------Set up test pack-------------------
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+
+            //---------------Test Result -----------------------
+
+        }
+
+        [Test]
+        [Ignore("TODO")]
+        public void Persist_WhenHaveOneMergeLine_ShouldOutputToSpecifiedFile_WithCommentAndThenMergedLine()
+        {
+            //---------------Set up test pack-------------------
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+
+            //---------------Test Result -----------------------
+
+        }
+
         private IHostFile Create(ITextFileReader reader = null,
                                     ITextFileWriter writer = null)
         {
             return new HostFile(reader ?? Substitute.For<ITextFileReader>(), 
                                 writer ?? Substitute.For<ITextFileWriter>());
         }
+    }
+
+    public static class TestExtensionsForTextFileReader
+    {
+        public static void SetData(this ITextFileReader reader, IEnumerable<string> lines)
+        {
+            var queue = new Queue<string>(lines);
+            reader.ReadLine().Returns(ci =>
+            {
+                if (!queue.Any())
+                    return null;
+                return queue.Dequeue();
+            });
+        }
+
     }
 }
