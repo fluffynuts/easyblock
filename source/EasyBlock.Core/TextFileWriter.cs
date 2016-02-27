@@ -8,20 +8,25 @@ namespace EasyBlock.Core
 {
     public class TextFileWriter: ITextFileWriter
     {
-        private string _path;
-        private List<string> _lines;
+        private readonly string _path;
+        private readonly List<string> _lines = new List<string>();
 
         public TextFileWriter(string path)
         {
             _path = path;
-            _lines = new List<string>();
         }
+
         public void AppendLine(string line)
         {
             _lines.Add(line);
         }
 
         public void Dispose()
+        {
+            Persist();
+        }
+
+        public void Persist()
         {
             using (var tempFile = new AutoTempFile())
             {

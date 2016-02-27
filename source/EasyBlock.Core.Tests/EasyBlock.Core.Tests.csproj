@@ -40,15 +40,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.RandomGenerators, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.RandomGenerators.1.1.34\lib\net40\PeanutButter.RandomGenerators.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.RandomGenerators.1.1.41\lib\net40\PeanutButter.RandomGenerators.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.TestUtils.Generic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.TestUtils.Generic.1.1.34\lib\net40\PeanutButter.TestUtils.Generic.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.TestUtils.Generic.1.1.41\lib\net40\PeanutButter.TestUtils.Generic.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.Utils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.Utils.1.1.34\lib\net40\PeanutButter.Utils.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.Utils.1.1.41\lib\net40\PeanutButter.Utils.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -61,6 +61,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectionOfHostLinesExtensions.cs" />
+    <Compile Include="HostFileLineComparer.cs" />
     <Compile Include="TestExtensionsForTextFileReader.cs" />
     <Compile Include="TestHostFIle.cs" />
     <Compile Include="TestHostFileLine.cs" />
@@ -74,13 +76,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="GenericBuilderTests-ExampleUsage.cs.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\EasyBlock.Core\EasyBlock.Core.csproj">
       <Project>{555A5EB3-5A71-421D-B9A5-780EB2E255A3}</Project>
       <Name>EasyBlock.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="GenericBuilderTests-ExampleUsage.cs.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

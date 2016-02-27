@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PeanutButter.RandomGenerators;
 using PeanutButter.TestUtils.Generic;
+using static PeanutButter.RandomGenerators.RandomValueGen;
 
 namespace EasyBlock.Core.Tests
 {
@@ -19,18 +15,20 @@ namespace EasyBlock.Core.Tests
         public void Construct_GivenBadLine_ShouldNotBarf(string input)
         {
             //---------------Set up test pack-------------------
+            var isPrimary = GetRandomBoolean();
 
             //---------------Assert Precondition----------------
 
             //---------------Execute Test ----------------------
             HostFileLine sut = null;
-            Assert.DoesNotThrow(() => sut = new HostFileLine(input));
+            Assert.DoesNotThrow(() => sut = new HostFileLine(input, isPrimary));
 
             //---------------Test Result -----------------------
             Assert.IsFalse(sut.IsComment);
             Assert.AreEqual(string.Empty, sut.Data);
             Assert.AreEqual(string.Empty, sut.HostName);
             Assert.AreEqual(string.Empty, sut.IPAddress);
+            Assert.AreEqual(isPrimary, sut.IsPrimary);
         }
 
         [Test]
@@ -86,7 +84,7 @@ namespace EasyBlock.Core.Tests
         public void Construct_GivenPartialLine_ShouldNotSetUpAsHostFileLine()
         {
             //---------------Set up test pack-------------------
-            var line = RandomValueGen.GetRandomString();
+            var line = GetRandomString();
 
             //---------------Assert Precondition----------------
 
@@ -101,9 +99,9 @@ namespace EasyBlock.Core.Tests
         }
 
 
-        private IHostFileLine Create(string data)
+        private IHostFileLine Create(string data, bool isPrimary = true)
         {
-            return new HostFileLine(data);
+            return new HostFileLine(data, isPrimary);
         }
     }
 }

@@ -51,6 +51,7 @@
     <Compile Include="MergedHostFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextFileReader.cs" />
+    <Compile Include="TextFileReaderExtensions.cs" />
     <Compile Include="TextFileWriter.cs" />
   </ItemGroup>
   <ItemGroup>
