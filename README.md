@@ -21,3 +21,4 @@ Win32 service (using PB.ServiceShell)
     - means that stopping the service returns the host machine back to normal
     - user could stop & disable if they wanted to
     - uninstall is simplified
+
