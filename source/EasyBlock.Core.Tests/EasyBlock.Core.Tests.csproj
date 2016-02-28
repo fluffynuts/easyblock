@@ -43,6 +43,14 @@
       <HintPath>..\packages\PeanutButter.RandomGenerators.1.1.41\lib\net40\PeanutButter.RandomGenerators.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PeanutButter.SimpleHTTPServer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PeanutButter.SimpleHTTPServer.1.1.42\lib\net40\PeanutButter.SimpleHTTPServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PeanutButter.SimpleTcpServer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PeanutButter.SimpleTcpServer.1.1.42\lib\net40\PeanutButter.SimpleTcpServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PeanutButter.TestUtils.Generic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PeanutButter.TestUtils.Generic.1.1.41\lib\net40\PeanutButter.TestUtils.Generic.dll</HintPath>
       <Private>True</Private>
@@ -64,6 +72,7 @@
     <Compile Include="CollectionOfHostLinesExtensions.cs" />
     <Compile Include="HostFileLineComparer.cs" />
     <Compile Include="TestExtensionsForTextFileReader.cs" />
+    <Compile Include="TestFileDownloader.cs" />
     <Compile Include="TestHostFIle.cs" />
     <Compile Include="TestHostFileLine.cs" />
     <Compile Include="TestMergedHostFile.cs" />

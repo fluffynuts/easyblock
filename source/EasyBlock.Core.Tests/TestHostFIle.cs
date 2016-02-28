@@ -27,7 +27,7 @@ namespace EasyBlock.Core.Tests
         }
 
         [Test]
-        public void Construct_ShouldLoadLinesFromReader()
+        public void Construct_WhenHaveNoPriorMergedLines_ShouldLoadLinesFromReader()
         {
             //---------------Set up test pack-------------------
             var reader = Substitute.For<ITextFileReader>();
@@ -50,6 +50,38 @@ namespace EasyBlock.Core.Tests
             Assert.AreEqual("4.4.4.4", line.IPAddress);
             Assert.AreEqual("google.stuff.com", line.HostName);
             Assert.IsTrue(sut.Lines.All(l => l.IsPrimary));
+
+        }
+
+        [Test]
+        public void Construct_WhenNoPriorMergedLines_ShouldLoadLinesFromReaderAsWellAsMergedLines()
+        {
+            //---------------Set up test pack-------------------
+            var reader = Substitute.For<ITextFileReader>();
+            var mergedIp = GetRandomIPv4Address();
+            var mergedHost = GetRandomHostname();
+            reader.SetData(_startData.And(HostFile.MERGE_MARKER).And($"{mergedIp}\t{mergedHost}"));
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var sut = Create(reader);
+
+            //---------------Test Result -----------------------
+            var line = sut.Lines.First();
+            Assert.IsTrue(line.IsComment);
+            Assert.AreEqual(line.Data, _startData[0]);
+            line = sut.Lines.Skip(1).First();
+            Assert.IsFalse(line.IsComment);
+            Assert.AreEqual("127.0.0.1", line.IPAddress);
+            Assert.AreEqual("localhost", line.HostName);
+            line = sut.Lines.Skip(2).First();
+            Assert.AreEqual("4.4.4.4", line.IPAddress);
+            Assert.AreEqual("google.stuff.com", line.HostName);
+            line = sut.Lines.Skip(3).First();
+            Assert.AreEqual(mergedIp, line.IPAddress);
+            Assert.AreEqual(mergedHost, line.HostName);
+            Assert.IsFalse(line.IsPrimary);
 
         }
 
@@ -79,13 +111,6 @@ namespace EasyBlock.Core.Tests
             //---------------Test Result -----------------------
             CollectionAssert.AreEqual(initialLines, sut.Lines, new HostFileLineComparer());
 
-        }
-
-        private ITextFileReader CreateReaderFor(params string[] lines)
-        {
-            var reader = Substitute.For<ITextFileReader>();
-            reader.SetData(lines);
-            return reader;
         }
 
         [Test]
@@ -223,7 +248,7 @@ namespace EasyBlock.Core.Tests
         }
 
         [Test]
-        public void Persist_WhenHaveTwoMergeLinesAndAComment_ShouldOutputToSpecifiedFile_WithCommentAndThenMergedLine()
+        public void Persist_WhenHaveTwoMergeLinesAndAComment_ShouldOutputToSpecifiedFile_WithCommentAndThenMergedLinesWithoutComments()
         {
             //---------------Set up test pack-------------------
             var reader = CreateReaderFor(_startData);
@@ -244,7 +269,7 @@ namespace EasyBlock.Core.Tests
             sut.Persist();
 
             //---------------Test Result -----------------------
-            writer.Received(8).AppendLine(Arg.Any<string>());
+            writer.Received(7).AppendLine(Arg.Any<string>());
             Received.InOrder(() =>
             {
                 writer.AppendLine(_startData[0]);
@@ -253,7 +278,6 @@ namespace EasyBlock.Core.Tests
                 writer.AppendLine(string.Empty);
                 writer.AppendLine(HostFile.MERGE_MARKER);
                 writer.AppendLine($"{ip}\t{host}");
-                writer.AppendLine("# list maintained by bob");
                 writer.AppendLine($"{anotherIp}\t{anotherHost}");
                 writer.Persist();
             });
@@ -265,6 +289,13 @@ namespace EasyBlock.Core.Tests
         {
             return new HostFile(reader ?? Substitute.For<ITextFileReader>(), 
                                 writer ?? Substitute.For<ITextFileWriter>());
+        }
+
+        private ITextFileReader CreateReaderFor(params string[] lines)
+        {
+            var reader = Substitute.For<ITextFileReader>();
+            reader.SetData(lines);
+            return reader;
         }
     }
 }

@@ -71,24 +71,40 @@ namespace EasyBlock.Core
 
         private void LoadFrom(ITextFileReader reader)
         {
+            var inMergeSection = false;
+            var mergeMarger = MERGE_MARKER.ToLower().Trim().Replace(" ", string.Empty);
             reader.EnumerateLines()
-                .ForEach(AddPrimaryLine);
+                .ForEach(line =>
+                {
+                    if (inMergeSection && string.IsNullOrWhiteSpace(line))
+                        return;
+                    if (line.Trim().ToLower().Replace(" ", string.Empty) == mergeMarger)
+                    {
+                        inMergeSection = true;
+                        return;
+                    }
+                    if (inMergeSection)
+                        AddMergeLine(line);
+                    else
+                        AddPrimaryLine(line);
+                });
         }
 
         private void AddMergeLine(string line)
         {
-            AddLine(line, false);
+            AddLine(line, false, true);
         }
 
         private void AddPrimaryLine(string line)
         {
-            AddLine(line, true);
+            AddLine(line, true, false);
         }
 
-        private void AddLine(string line, bool isPrimary)
+        private void AddLine(string line, bool isPrimary, bool skipIfComment)
         {
             var hostFileLine = new HostFileLine(line, isPrimary);
-            if (!isPrimary && AlreadyHaveLineForHostOf(hostFileLine))
+            if ((hostFileLine.IsComment && skipIfComment) ||
+                (!isPrimary && AlreadyHaveLineForHostOf(hostFileLine)))
                 return;
             _lines.Add(hostFileLine);
         }

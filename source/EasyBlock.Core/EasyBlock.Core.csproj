@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileDownloader.cs" />
     <Compile Include="HostFile.cs" />
     <Compile Include="HostFileLine.cs" />
     <Compile Include="ITextFileReader.cs" />
