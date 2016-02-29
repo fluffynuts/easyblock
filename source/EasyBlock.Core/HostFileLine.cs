@@ -23,9 +23,9 @@ namespace EasyBlock.Core
 
         public HostFileLine(string line, bool isPrimary)
         {
+            IsPrimary = isPrimary;
             if (string.IsNullOrWhiteSpace(line))
                 return;
-            IsPrimary = isPrimary;
             Grok(line);
         }
 
