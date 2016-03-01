@@ -60,11 +60,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DownloadResult.cs" />
     <Compile Include="FileDownloader.cs" />
     <Compile Include="HostFile.cs" />
     <Compile Include="HostBlockCoordinator.cs" />
     <Compile Include="HostFileFactory.cs" />
     <Compile Include="HostFileLine.cs" />
+    <Compile Include="IDownloadResult.cs" />
+    <Compile Include="IFileDownloader.cs" />
     <Compile Include="ITextFileReader.cs" />
     <Compile Include="ITextFileWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

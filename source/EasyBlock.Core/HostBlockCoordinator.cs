@@ -9,6 +9,8 @@ namespace EasyBlock.Core
 {
     public interface IHostBlockCoordinator
     {
+        void Apply();
+        void Unapply();
     }
 
     public class HostBlockCoordinator: IHostBlockCoordinator
@@ -35,6 +37,29 @@ namespace EasyBlock.Core
             _hostFileFactory = hostFileFactory;
             _textFileReaderFactory = textFileReaderFactory;
             _textFileWriterFactory = textFileWriterFactory;
+        }
+
+        public void Apply()
+        {
+            var blockLists = DownloadBlocklists();
+        }
+
+        private IDownloadResult[] DownloadBlocklists()
+        {
+            var sourceUrls = _iniFile["sources"].Keys.ToArray();
+            var tasks = sourceUrls.Aggregate(new List<Task<IDownloadResult>>(), (accumulator, url) =>
+            {
+                accumulator.Add(_fileDownloader.DownloadDataAsync(url));
+                return accumulator;
+            });
+            var waitOn = tasks.Cast<Task>().ToArray();
+            Task.WaitAll(waitOn);
+            return tasks.Select(t => t.Result).ToArray();
+        }
+
+        public void Unapply()
+        {
+            throw new NotImplementedException();
         }
     }
 }

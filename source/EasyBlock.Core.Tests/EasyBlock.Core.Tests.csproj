@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollectionOfHostLinesExtensions.cs" />
+    <Compile Include="IniBuilder.cs" />
     <Compile Include="HostFileLineComparer.cs" />
     <Compile Include="TestExtensionsForTextFileReader.cs" />
     <Compile Include="TestFileDownloader.cs" />

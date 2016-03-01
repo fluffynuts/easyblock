@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using PeanutButter.RandomGenerators;
 using PeanutButter.SimpleHTTPServer;
 using PeanutButter.Utils;
 using static PeanutButter.RandomGenerators.RandomValueGen;
@@ -13,7 +11,7 @@ namespace EasyBlock.Core.Tests
     public class TestFileDownloader
     {
         [Test]
-        public async Task Download_GivenUrlAndOutputFile_WhenCanDownload_ShouldPutFileInRequiredOutput()
+        public async Task Download_GivenUrl_WhenCanDownload_ShouldReturnData()
         {
             //---------------Set up test pack-------------------
             using (var server = new HttpServer())
@@ -32,38 +30,32 @@ namespace EasyBlock.Core.Tests
                 //---------------Assert Precondition----------------
 
                 //---------------Execute Test ----------------------
-                var result = await sut.DownloadFileAsync(server.GetFullUrlFor(relativeUrl), tempFile.Path);
+                var result = await sut.DownloadDataAsync(server.GetFullUrlFor(relativeUrl));
 
                 //---------------Test Result -----------------------
                 Assert.IsTrue(result.Success);
-                var writtenBytes = File.ReadAllBytes(tempFile.Path);
-                Assert.AreEqual(writtenBytes.Length, result.DownloadSize);
-                CollectionAssert.AreEqual(expected, writtenBytes);
+                CollectionAssert.AreEqual(expected, result.Data);
             }
         }
 
         [Test]
-        public async Task DownloadFile_GivenUrlAndOutputPath_WhenCannotDownload_ShouldNotOverwriteOutputPath()
+        public async Task DownloadFile_GivenUrl_WhenCannotDownload_ShouldSetResultDataNull()
         {
             //---------------Set up test pack-------------------
             using (var server = new HttpServer())
             using (var tempFile = new AutoTempFile())
             {
-                var expected = GetRandomBytes();
-                File.WriteAllBytes(tempFile.Path, expected);
                 var sut = Create();
                 var serverPath = GetRandomString();
 
                 //---------------Assert Precondition----------------
 
                 //---------------Execute Test ----------------------
-                var result = await sut.DownloadFileAsync(server.GetFullUrlFor(serverPath), tempFile.Path);
+                var result = await sut.DownloadDataAsync(server.GetFullUrlFor(serverPath));
 
                 //---------------Test Result -----------------------
                 Assert.IsFalse(result.Success);
-                Assert.AreEqual(0, result.DownloadSize);
-                var bytesOnDisk = File.ReadAllBytes(tempFile.Path);
-                CollectionAssert.AreEqual(expected, bytesOnDisk);
+                Assert.IsNull(result.Data);
             }
         }
 
