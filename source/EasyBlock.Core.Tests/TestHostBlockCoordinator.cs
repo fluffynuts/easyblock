@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
+using PeanutButter.INIFile;
 using PeanutButter.TestUtils.Generic;
+using PeanutButter.Utils;
 
 namespace EasyBlock.Core.Tests
 {
@@ -25,6 +23,7 @@ namespace EasyBlock.Core.Tests
             //---------------Test Result -----------------------
         }
 
+        [TestCase("iniFile", typeof(IINIFile))]
         [TestCase("fileDownloader", typeof(IFileDownloader))]
         [TestCase("hostFileFactory", typeof(IHostFileFactory))]
         [TestCase("textFileReaderFactory", typeof(ITextFileReaderFactory))]
@@ -41,8 +40,27 @@ namespace EasyBlock.Core.Tests
             //---------------Test Result -----------------------
         }
 
+        [Test]
+        [Ignore("WIP")]
+        public void Apply_ShouldAttemptToDownloadAllUrlsInSourcesSectionOfINIFile()
+        {
+            //---------------Set up test pack-------------------
+            var iniData = TextLines(
+
+            );
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+
+            //---------------Test Result -----------------------
+            Assert.Fail("Test Not Yet Implemented");
+        }
 
 
-
+        private string TextLines(params string[] lines)
+        {
+            return lines.JoinWith(Environment.NewLine);
+        }
     }
 }
