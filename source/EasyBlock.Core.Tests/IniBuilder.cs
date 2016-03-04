@@ -62,7 +62,7 @@ namespace EasyBlock.Core.Tests
         public string[] BuildLines()
         {
             return new[] { "[settings]" }
-                .And(Config("IntervalInMinutes", _interval.ToString()))
+                .And(Config("RefreshIntervalInMinutes", _interval.ToString()))
                 .And(Config("HostsFile", _hostFile))
                 .And("[sources]")
                 .And(_sources)
