@@ -1,6 +1,10 @@
 using System;
+using System.IO;
+using NSubstitute;
 using NUnit.Framework;
-using PeanutButter.INIFile;
+using PeanutButter.TestUtils.Generic;
+using PeanutButter.Utils;
+using static PeanutButter.RandomGenerators.RandomValueGen;
 
 namespace EasyBlock.Core.Tests
 {
@@ -8,36 +12,57 @@ namespace EasyBlock.Core.Tests
     public class TestCacheFilenameGenerator
     {
         [Test]
-        public void Construct_GivenNullINIFile_ShouldThrowANE()
+        public void Construct_GivenNullAppSettings_ShouldThrowANE()
         {
             //---------------Set up test pack-------------------
 
             //---------------Assert Precondition----------------
 
             //---------------Execute Test ----------------------
-            Assert.Throws<ArgumentNullException>(() => new CacheFilenameGenerator((IINIFile)null));
+            Assert.Throws<ArgumentNullException>(() => new CacheFilenameGenerator((IApplicationConfiguration)null));
 
             //---------------Test Result -----------------------
         }
 
         [Test]
-        [Ignore("WIP")]
-        public void GenerateFor_ShouldReturnPathUnderConfiguredCachePath()
+        public void Type_ShouldImplement_ICacheFilenameGenerator()
         {
             //---------------Set up test pack-------------------
-            //var expected = RandomValueGen.GetRandomFileName
-            //var iniFile = IniBuilder.Create()
-            //                    .WithCacheLocation(
-            //var sut = Create(
+            var sut = typeof(CacheFilenameGenerator);
 
             //---------------Assert Precondition----------------
 
             //---------------Execute Test ----------------------
+            sut.ShouldImplement<ICacheFilenameGenerator>();
 
             //---------------Test Result -----------------------
-            Assert.Fail("Test Not Yet Implemented");
         }
 
 
+        [Test]
+        public void GenerateFor_ShouldReturnPathUnderConfiguredCachePath()
+        {
+            //---------------Set up test pack-------------------
+            var appSettings = Substitute.For<IApplicationConfiguration>();
+            var cacheFolder = GetRandomWindowsPath();
+            appSettings.CacheFolder.Returns(cacheFolder);
+            var sourceUrl = GetRandomHttpUrl() + "/somepath?arg1=value1&arg2=value2";
+            var expectedFileName = sourceUrl.AsBytes().ToMD5String();
+            var expected = Path.Combine(cacheFolder, expectedFileName);
+            var sut = Create(appSettings);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var result = sut.GenerateFor(sourceUrl);
+
+            //---------------Test Result -----------------------
+            Assert.AreEqual(expected, result);
+        }
+
+        private ICacheFilenameGenerator Create(IApplicationConfiguration applicationConfiguration)
+        {
+            return new CacheFilenameGenerator(applicationConfiguration);
+        }
     }
 }

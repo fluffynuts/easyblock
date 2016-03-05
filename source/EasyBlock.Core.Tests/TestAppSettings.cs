@@ -17,12 +17,12 @@ namespace EasyBlock.Core.Tests
         public void Type_ShouldImplement_IAppSettings()
         {
             //---------------Set up test pack-------------------
-            var sut = typeof(AppSettings);
+            var sut = typeof(ApplicationConfiguration);
 
             //---------------Assert Precondition----------------
 
             //---------------Execute Test ----------------------
-            sut.ShouldImplement<IAppSettings>();
+            sut.ShouldImplement<IApplicationConfiguration>();
 
             //---------------Test Result -----------------------
         }
@@ -35,7 +35,7 @@ namespace EasyBlock.Core.Tests
             //---------------Assert Precondition----------------
 
             //---------------Execute Test ----------------------
-            ConstructorTestUtils.ShouldExpectNonNullParameterFor<AppSettings>(parameterName, parameterType);
+            ConstructorTestUtils.ShouldExpectNonNullParameterFor<ApplicationConfiguration>(parameterName, parameterType);
 
             //---------------Test Result -----------------------
         }
@@ -236,12 +236,9 @@ namespace EasyBlock.Core.Tests
             CollectionAssert.Contains(result, host2);
         }
 
-
-
-
-        private IAppSettings Create(IINIFile iniFile)
+        private IApplicationConfiguration Create(IINIFile iniFile)
         {
-            return new AppSettings(iniFile);
+            return new ApplicationConfiguration(iniFile);
         }
     }
 

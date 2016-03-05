@@ -12,15 +12,7 @@ using static EasyBlock.Core.Constants;
 
 namespace EasyBlock.Core
 {
-    public interface IAppSettings
-    {
-        int RefreshIntervalInMinutes { get; }
-        string HostsFile { get; }
-        IEnumerable<string> Blacklist { get; }
-        IEnumerable<string> Whitelist { get; }
-        string CacheFolder { get; }
-    }
-    public class AppSettings: IAppSettings
+    public class ApplicationConfiguration: IApplicationConfiguration
     {
         public int RefreshIntervalInMinutes { get; private set; }
         public string HostsFile { get; private set; }
@@ -30,7 +22,7 @@ namespace EasyBlock.Core
         private readonly List<string> _blacklist = new EditableList<string>();
         private readonly List<string> _whitelist = new EditableList<string>();
 
-        public AppSettings(IINIFile iniFile)
+        public ApplicationConfiguration(IINIFile iniFile)
         {
             if (iniFile == null) throw new ArgumentNullException(nameof(iniFile));
             LoadFrom(iniFile);
