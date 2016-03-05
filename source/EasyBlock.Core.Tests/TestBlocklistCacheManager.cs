@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
+using NSubstitute;
 using NUnit.Framework;
-using PeanutButter.RandomGenerators;
+using static PeanutButter.RandomGenerators.RandomValueGen;
 using PeanutButter.TestUtils.Generic;
+using PeanutButter.Utils;
 
 namespace EasyBlock.Core.Tests
 {
@@ -37,17 +40,79 @@ namespace EasyBlock.Core.Tests
 
 
         [Test]
-        [Ignore("WIP: requires cache filename generator")]
-        public void Cache_GivenSourceAndData_ShouldWriteDataToCacheLocation()
+        public void Set_GivenSourceAndData_ShouldWriteDataToCacheLocation()
         {
             //---------------Set up test pack-------------------
+            var sourceUrl = GetRandomHttpUrl();
+            var expected = GetRandomBytes();
+            var cacheFilenameGenerator = Substitute.For<ICacheFilenameGenerator>();
+            using (var tempFile = new AutoTempFile())
+            {
+                cacheFilenameGenerator.GenerateFor(sourceUrl)
+                                    .Returns(tempFile.Path);
+                var sut = Create(cacheFilenameGenerator);
+                //---------------Assert Precondition----------------
+                CollectionAssert.IsEmpty(File.ReadAllBytes(tempFile.Path));
 
-            //---------------Assert Precondition----------------
+                //---------------Execute Test ----------------------
+                sut.Set(sourceUrl, expected);
 
-            //---------------Execute Test ----------------------
+                //---------------Test Result -----------------------
+                CollectionAssert.AreEqual(expected, File.ReadAllBytes(tempFile.Path));
+            }
+        }
 
-            //---------------Test Result -----------------------
-            Assert.Fail("Test Not Yet Implemented");
+        [Test]
+        public void Get_GivenSource_WhenNoExistingData_ShouldReturnNull()
+        {
+            //---------------Set up test pack-------------------
+            var sourceUrl = GetRandomHttpUrl();
+            var cacheFilenameGenerator = Substitute.For<ICacheFilenameGenerator>();
+            using (var tempFile = new AutoTempFile())
+            {
+                File.Delete(tempFile.Path);
+                cacheFilenameGenerator.GenerateFor(sourceUrl).Returns(tempFile.Path);
+                var sut = Create(cacheFilenameGenerator);
+                //---------------Assert Precondition----------------
+                Assert.IsFalse(File.Exists(tempFile.Path));
+
+                //---------------Execute Test ----------------------
+                var result = sut.Get(sourceUrl);
+
+                //---------------Test Result -----------------------
+                Assert.IsNull(result);
+            }
+        }
+
+        [Test]
+        public void Get_GivenSource_WhenCacheFileExists_ShouldReturnContents()
+        {
+            //---------------Set up test pack-------------------
+            var sourceUrl = GetRandomHttpUrl();
+            var cacheFilenameGenerator = Substitute.For<ICacheFilenameGenerator>();
+            using (var tempFile = new AutoTempFile())
+            {
+                cacheFilenameGenerator.GenerateFor(sourceUrl).Returns(tempFile.Path);
+                var expected = GetRandomBytes();
+                File.WriteAllBytes(tempFile.Path, expected);
+                var sut = Create(cacheFilenameGenerator);
+
+                //---------------Assert Precondition----------------
+                CollectionAssert.AreEqual(expected, tempFile.BinaryData);
+
+                //---------------Execute Test ----------------------
+                var result = sut.Get(sourceUrl);
+
+                //---------------Test Result -----------------------
+                CollectionAssert.AreEqual(expected, result);
+            }
+        }
+
+
+
+        private IBlocklistCacheManager Create(ICacheFilenameGenerator cacheFilenameGenerator)
+        {
+            return new BlocklistCacheManager(cacheFilenameGenerator);
         }
     }
 }

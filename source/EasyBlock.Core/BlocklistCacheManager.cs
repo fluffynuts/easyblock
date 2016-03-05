@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace EasyBlock.Core
 {
@@ -14,12 +15,16 @@ namespace EasyBlock.Core
 
         public void Set(string source, byte[] data)
         {
-            throw new NotImplementedException();
+            var path = _cacheFilenameGenerator.GenerateFor(source);
+            File.WriteAllBytes(path, data);
         }
 
         public byte[] Get(string source)
         {
-            throw new NotImplementedException();
+            var cacheFilepath = _cacheFilenameGenerator.GenerateFor(source);
+            return File.Exists(cacheFilepath)
+                        ? File.ReadAllBytes(cacheFilepath)
+                        : null;
         }
     }
 
