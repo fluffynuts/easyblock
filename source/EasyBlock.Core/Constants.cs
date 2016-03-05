@@ -5,6 +5,7 @@
         public static class Sections
         {
             public const string SETTINGS = "settings";
+            public const string SOURCES = "sources";
             public const string BLACKLIST = "blacklist";
             public const string WHITELIST = "whitelist";
         }

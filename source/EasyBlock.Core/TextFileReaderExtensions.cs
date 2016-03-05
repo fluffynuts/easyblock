@@ -10,5 +10,6 @@ namespace EasyBlock.Core
             while ((line = reader.ReadLine()) != null)
                 yield return line;
         } 
+
     }
 }

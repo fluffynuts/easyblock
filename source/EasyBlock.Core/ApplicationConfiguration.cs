@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Castle.Components.DictionaryAdapter;
 using PeanutButter.INIFile;
 using static EasyBlock.Core.Constants;
@@ -17,10 +14,12 @@ namespace EasyBlock.Core
         public int RefreshIntervalInMinutes { get; private set; }
         public string HostsFile { get; private set; }
         public string CacheFolder { get; private set; }
+        public IEnumerable<string> Sources => _sources;
         public IEnumerable<string> Blacklist => _blacklist;
         public IEnumerable<string> Whitelist => _whitelist;
         private readonly List<string> _blacklist = new EditableList<string>();
         private readonly List<string> _whitelist = new EditableList<string>();
+        private readonly List<string> _sources = new EditableList<string>();
 
         public ApplicationConfiguration(IINIFile iniFile)
         {
@@ -31,8 +30,14 @@ namespace EasyBlock.Core
         private void LoadFrom(IINIFile iniFile)
         {
             LoadSettingsFrom(iniFile);
+            LoadSourcesFrom(iniFile);
             LoadBlacklistFrom(iniFile);
             LoadWhitelistFrom(iniFile);
+        }
+
+        private void LoadSourcesFrom(IINIFile iniFile)
+        {
+            LoadKeysInto(_sources, iniFile, Sections.SOURCES);
         }
 
         private void LoadWhitelistFrom(IINIFile iniFile)

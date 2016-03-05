@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 using static PeanutButter.RandomGenerators.RandomValueGen;
@@ -25,15 +27,16 @@ namespace EasyBlock.Core.Tests
             //---------------Test Result -----------------------
         }
 
-        [Test]
-        public void Construct_GivenNullCacheFilenameGenerator_ShouldThrowANE()
+        [TestCase("cacheFilenameGenerator", typeof(ICacheFilenameGenerator))]
+        [TestCase("readerFactory", typeof(ITextFileReaderFactory))]
+        public void Construct_ShouldExpectParameter_(string parameterName, Type parameterType)
         {
             //---------------Set up test pack-------------------
 
             //---------------Assert Precondition----------------
 
             //---------------Execute Test ----------------------
-            Assert.Throws<ArgumentNullException>(() => new BlocklistCacheManager((ICacheFilenameGenerator)null));
+            ConstructorTestUtils.ShouldExpectNonNullParameterFor<BlocklistCacheManager>(parameterName, parameterType);
 
             //---------------Test Result -----------------------
         }
@@ -77,7 +80,7 @@ namespace EasyBlock.Core.Tests
                 Assert.IsFalse(File.Exists(tempFile.Path));
 
                 //---------------Execute Test ----------------------
-                var result = sut.Get(sourceUrl);
+                var result = sut.GetReaderFor(sourceUrl);
 
                 //---------------Test Result -----------------------
                 Assert.IsNull(result);
@@ -93,26 +96,31 @@ namespace EasyBlock.Core.Tests
             using (var tempFile = new AutoTempFile())
             {
                 cacheFilenameGenerator.GenerateFor(sourceUrl).Returns(tempFile.Path);
-                var expected = GetRandomBytes();
-                File.WriteAllBytes(tempFile.Path, expected);
-                var sut = Create(cacheFilenameGenerator);
+                var expected = GetRandomCollection<string>(2,5);
+                File.WriteAllBytes(tempFile.Path, expected.JoinWith(Environment.NewLine).AsBytes());
+                var sut = Create(cacheFilenameGenerator, new TextFileReaderFactory());
 
                 //---------------Assert Precondition----------------
-                CollectionAssert.AreEqual(expected, tempFile.BinaryData);
+                CollectionAssert.AreEqual(expected, tempFile.StringData.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
 
                 //---------------Execute Test ----------------------
-                var result = sut.Get(sourceUrl);
+                var result = sut.GetReaderFor(sourceUrl);
 
                 //---------------Test Result -----------------------
-                CollectionAssert.AreEqual(expected, result);
+                Assert.IsNotNull(result);
+                var resultLines = result.EnumerateLines().ToArray();
+                CollectionAssert.AreEqual(expected, resultLines);
             }
         }
 
 
 
-        private IBlocklistCacheManager Create(ICacheFilenameGenerator cacheFilenameGenerator)
+        private IBlocklistCacheManager Create(ICacheFilenameGenerator cacheFilenameGenerator,
+                                                ITextFileReaderFactory textFileReaderFactory = null)
         {
-            return new BlocklistCacheManager(cacheFilenameGenerator);
+            return new BlocklistCacheManager(
+                            cacheFilenameGenerator, 
+                            textFileReaderFactory ?? Substitute.For<ITextFileReaderFactory>());
         }
     }
 }

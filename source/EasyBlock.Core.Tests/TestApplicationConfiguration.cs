@@ -11,7 +11,7 @@ using static EasyBlock.Core.Constants;
 namespace EasyBlock.Core.Tests
 {
     [TestFixture]
-    public class TestAppSettings
+    public class TestApplicationConfiguration
     {
         [Test]
         public void Type_ShouldImplement_IAppSettings()
@@ -235,6 +235,47 @@ namespace EasyBlock.Core.Tests
             CollectionAssert.Contains(result, host1);
             CollectionAssert.Contains(result, host2);
         }
+
+        [Test]
+        public void Construct_ShouldLoadSourcesFromIniFile()
+        {
+            //---------------Set up test pack-------------------
+            var iniFile = new INIFile();
+            var source1 = GetRandomHttpUrl();
+            var source2 = GetRandomHttpUrl();
+            iniFile[Sections.SOURCES][source1] = null;
+            iniFile[Sections.SOURCES][source2] = null;
+            var sut = Create(iniFile);
+
+            //---------------Assert Precondition----------------
+            Assert.IsTrue(iniFile.HasSection(Sections.SOURCES));
+
+            //---------------Execute Test ----------------------
+            var result = sut.Sources;
+
+            //---------------Test Result -----------------------
+            Assert.IsNotNull(result);
+            CollectionAssert.IsNotEmpty(result);
+            CollectionAssert.AreEqual(new[] { source1, source2 }, result);
+        }
+
+        [Test]
+        public void Construct_WhenHaveNoSourcesSection_ShouldNotThrow()
+        {
+            //---------------Set up test pack-------------------
+            var iniFile = new INIFile();
+            var sut = Create(iniFile);
+
+            //---------------Assert Precondition----------------
+            Assert.IsFalse(iniFile.HasSection(Sections.SOURCES));
+
+            //---------------Execute Test ----------------------
+            var result = sut.Sources;
+
+            //---------------Test Result -----------------------
+            CollectionAssert.IsEmpty(result);
+        }
+
 
         private IApplicationConfiguration Create(IINIFile iniFile)
         {

@@ -7,6 +7,7 @@ namespace EasyBlock.Core
         int RefreshIntervalInMinutes { get; }
         string HostsFile { get; }
         string CacheFolder { get; }
+        IEnumerable<string> Sources { get; }
         IEnumerable<string> Blacklist { get; }
         IEnumerable<string> Whitelist { get; }
     }

@@ -58,7 +58,6 @@ namespace EasyBlock.Core.Tests
             Assert.Throws<FileNotFoundException>(() => Create(fileName));
             
             //---------------Test Result -----------------------
-
         }
 
         [Test]

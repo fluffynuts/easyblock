@@ -84,7 +84,7 @@
     <Compile Include="CollectionOfHostLinesExtensions.cs" />
     <Compile Include="IniBuilder.cs" />
     <Compile Include="HostFileLineComparer.cs" />
-    <Compile Include="TestAppSettings.cs" />
+    <Compile Include="TestApplicationConfiguration.cs" />
     <Compile Include="TestBlocklistCacheManager.cs" />
     <Compile Include="TestCacheFilenameGenerator.cs" />
     <Compile Include="TestExtensionsForTextFileReader.cs" />

@@ -6,11 +6,15 @@ namespace EasyBlock.Core
     public class BlocklistCacheManager: IBlocklistCacheManager
     {
         private readonly ICacheFilenameGenerator _cacheFilenameGenerator;
+        private readonly ITextFileReaderFactory _readerFactory;
 
-        public BlocklistCacheManager(ICacheFilenameGenerator cacheFilenameGenerator)
+        public BlocklistCacheManager(ICacheFilenameGenerator cacheFilenameGenerator,
+                                      ITextFileReaderFactory readerFactory)
         {
             if (cacheFilenameGenerator == null) throw new ArgumentNullException(nameof(cacheFilenameGenerator));
+            if (readerFactory == null) throw new ArgumentNullException(nameof(readerFactory));
             _cacheFilenameGenerator = cacheFilenameGenerator;
+            _readerFactory = readerFactory;
         }
 
         public void Set(string source, byte[] data)
@@ -19,13 +23,14 @@ namespace EasyBlock.Core
             File.WriteAllBytes(path, data);
         }
 
-        public byte[] Get(string source)
+        public ITextFileReader GetReaderFor(string source)
         {
             var cacheFilepath = _cacheFilenameGenerator.GenerateFor(source);
             return File.Exists(cacheFilepath)
-                        ? File.ReadAllBytes(cacheFilepath)
+                        ? _readerFactory.Open(cacheFilepath)
                         : null;
         }
+
     }
 
 }
