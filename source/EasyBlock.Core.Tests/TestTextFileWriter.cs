@@ -108,9 +108,10 @@ namespace EasyBlock.Core.Tests
         }
 
         [Test]
-        [Ignore("Answer: it barfs")]
-        public void Discovery_WhatDoesFileMoveDoWhenTheTargetExists()
+        public void FileMove_ShouldThrowWhenTargetFileExists()
         {
+            // Discovery -- and this is why I don't just use a rename
+            //   to get a file atomically moved
             //---------------Set up test pack-------------------
             using (var tempFile1 = new AutoTempFile())
             using (var tempFile2 = new AutoTempFile())
@@ -118,11 +119,9 @@ namespace EasyBlock.Core.Tests
                 //---------------Assert Precondition----------------
 
                 //---------------Execute Test ----------------------
-                File.Move(tempFile2.Path, tempFile1.Path);
+                Assert.Throws<IOException>(() => File.Move(tempFile2.Path, tempFile1.Path));
 
                 //---------------Test Result -----------------------
-                Assert.IsTrue(File.Exists(tempFile1.Path));
-                Assert.IsFalse(File.Exists(tempFile2.Path));
             }
         }
 

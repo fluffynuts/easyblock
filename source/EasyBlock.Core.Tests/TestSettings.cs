@@ -317,5 +317,4 @@ namespace EasyBlock.Core.Tests
             return new Settings(iniFile);
         }
     }
-
 }

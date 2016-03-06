@@ -41,7 +41,7 @@ namespace EasyBlock.Core.Tests
         }
 
         [Test]
-        [Ignore("WIP")]
+        [Ignore("WIP: container needs to know how to resolve INI factory and ISettings first")]
         public void Container_ShouldResolveHostBlockCoordinator_ToSingleton()
         {
             //---------------Set up test pack-------------------

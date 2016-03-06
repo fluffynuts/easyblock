@@ -22,5 +22,7 @@
             public const string WINDOWS_HOSTS_FILE_LOCATION = "%WINDIR%\\system32\\drivers\\etc\\hosts";
             public const int ONE_DAY = 1440; // one day
         }
+
+        public const string MERGE_MARKER = "# Lines below this have been merged in by EasyBlock and will be removed when the service is stopped.";
     }
 }

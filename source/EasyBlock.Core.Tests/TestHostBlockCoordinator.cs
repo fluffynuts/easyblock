@@ -164,13 +164,10 @@ namespace EasyBlock.Core.Tests
                                 .Build();
             var reader = Substitute.For<ITextFileReader>();
             var writer = Substitute.For<ITextFileWriter>();
-            var readerFactory = Substitute.For<ITextFileReaderFactory>();
-            readerFactory.Open(hostFilePath).Returns(reader);
-            var writerFactory = Substitute.For<ITextFileWriterFactory>();
-            writerFactory.Open(hostFilePath).Returns(writer);
-            var hostFileFactory = Substitute.For<IHostFileFactory>();
+            var readerFactory = CreateReaderFactoryFor(hostFilePath, reader);
+            var writerFactory = CreateWriterFactoryFor(hostFilePath, writer);
             var hostFile = Substitute.For<IHostFile>();
-            hostFileFactory.Create(reader, writer).Returns(hostFile);
+            var hostFileFactory = CreateHostFileFactoryFor(hostFile);
             var sut = Create(settings, 
                                 hostFileFactory:hostFileFactory, 
                                 blocklistCacheManager:cacheManager,
@@ -260,45 +257,72 @@ namespace EasyBlock.Core.Tests
         }
 
 
+        [Test]
+        public void Unapply_ShouldReturnHostsFileBackToOriginalState()
+        {
+            //---------------Set up test pack-------------------
+            var settings = SettingsBuilder.Create()
+                                .WithHostFile(GetRandomWindowsPath())
+                                .Build();
+            var reader = Substitute.For<ITextFileReader>();
+            var writer = Substitute.For<ITextFileWriter>();
+            var readerFactory = CreateReaderFactoryFor(settings.HostsFile, reader);
+            var writerFactory = CreateWriterFactoryFor(settings.HostsFile, writer);
+            var unexpected1 = GetRandomHostname();
+            var unexpected2 = GetAnother(unexpected1, GetRandomHostname);
+            reader.SetData(
+                "# original header",
+                "127.0.0.1       localhost",
+                "192.168.1.100   squishy",
+                Constants.MERGE_MARKER,
+                $"127.0.0.1       {unexpected1}",
+                $"127.0.0.1       {unexpected2}"
+            );
+            var hostFile = Substitute.For<IHostFile>();
+            var hostFileFactory = CreateHostFileFactoryFor(hostFile);
+            var sut = Create(settings, 
+                                textFileReaderFactory: readerFactory, 
+                                textFileWriterFactory: writerFactory,
+                                hostFileFactory: hostFileFactory);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Unapply();
+
+            //---------------Test Result -----------------------
+            Received.InOrder(() =>
+            {
+                readerFactory.Open(settings.HostsFile);
+                writerFactory.Open(settings.HostsFile);
+                hostFileFactory.Create(reader, writer);
+                hostFile.Revert();
+                hostFile.Persist();
+            });
+        }
+
+
+        private ITextFileReaderFactory CreateReaderFactoryFor(string path, ITextFileReader reader)
+        {
+            var factory = Substitute.For<ITextFileReaderFactory>();
+            factory.Open(path).Returns(reader);
+            return factory;
+        }
+
+        private ITextFileWriterFactory CreateWriterFactoryFor(string path, ITextFileWriter reader)
+        {
+            var factory = Substitute.For<ITextFileWriterFactory>();
+            factory.Open(path).Returns(reader);
+            return factory;
+        }
+
         private IHostFileFactory CreateHostFileFactoryFor(IHostFile hostFile)
         {
             var factory = Substitute.For<IHostFileFactory>();
             factory.Create(Arg.Any<ITextFileReader>(), Arg.Any<ITextFileWriter>())
-                    .Returns(hostFile);
+                .Returns(hostFile);
             return factory;
         }
-
-        [Test]
-        [Ignore("WIP")]
-        public void Apply_ShouldNotApplyHostsWhichAreInUserWhiteListByRegEx()
-        {
-            //---------------Set up test pack-------------------
-
-            //---------------Assert Precondition----------------
-
-            //---------------Execute Test ----------------------
-
-            //---------------Test Result -----------------------
-            Assert.Fail("Test Not Yet Implemented");
-        }
-
-
-
-
-        [Test]
-        [Ignore("WIP")]
-        public void Unapply_ShouldReturnHostsFileBackToOriginalState()
-        {
-            //---------------Set up test pack-------------------
-
-            //---------------Assert Precondition----------------
-
-            //---------------Execute Test ----------------------
-
-            //---------------Test Result -----------------------
-            Assert.Fail("Test Not Yet Implemented");
-        }
-
 
         private ITextFileReader ReaderFor(params string[] lines)
         {
@@ -323,6 +347,5 @@ namespace EasyBlock.Core.Tests
                 textFileWriterFactory ?? Substitute.For<ITextFileWriterFactory>(),
                 blocklistCacheManager ?? Substitute.For<IBlocklistCacheManager>());
         }
-
     }
 }

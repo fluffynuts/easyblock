@@ -43,32 +43,32 @@
       <HintPath>..\packages\NSubstitute.1.9.2.0\lib\net45\NSubstitute.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.0.5813.39031, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.0.1\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.2.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.2.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.INI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.INI.1.2.6\lib\net45\PeanutButter.INI.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.INI.1.2.7\lib\net45\PeanutButter.INI.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.RandomGenerators, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.RandomGenerators.1.2.6\lib\net45\PeanutButter.RandomGenerators.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.RandomGenerators.1.2.7\lib\net45\PeanutButter.RandomGenerators.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.SimpleHTTPServer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.SimpleHTTPServer.1.2.6\lib\net45\PeanutButter.SimpleHTTPServer.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.SimpleHTTPServer.1.2.7\lib\net45\PeanutButter.SimpleHTTPServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.SimpleTcpServer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.SimpleTcpServer.1.2.6\lib\net45\PeanutButter.SimpleTcpServer.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.SimpleTcpServer.1.2.7\lib\net45\PeanutButter.SimpleTcpServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.TestUtils.Generic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.TestUtils.Generic.1.2.6\lib\net45\PeanutButter.TestUtils.Generic.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.TestUtils.Generic.1.2.7\lib\net45\PeanutButter.TestUtils.Generic.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.Utils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.Utils.1.2.6\lib\net45\PeanutButter.Utils.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.Utils.1.2.7\lib\net45\PeanutButter.Utils.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -86,6 +86,7 @@
     <Compile Include="IniBuilder.cs" />
     <Compile Include="HostFileLineComparer.cs" />
     <Compile Include="SettingsBuilder.cs" />
+    <Compile Include="TestINIFactory.cs" />
     <Compile Include="TestSettings.cs" />
     <Compile Include="TestBlocklistCacheManager.cs" />
     <Compile Include="TestCacheFilenameGenerator.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="TestWindsorBootstrapper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

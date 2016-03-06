@@ -1,4 +1,6 @@
-﻿using Castle.Windsor;
+﻿using Castle.MicroKernel.Registration;
+using Castle.Windsor;
+using PeanutButter.INIFile;
 using PeanutButter.Utils.Windsor;
 
 namespace EasyBlock.Core
@@ -8,7 +10,9 @@ namespace EasyBlock.Core
         public static IWindsorContainer Bootstrap()
         {
             var container = new WindsorContainer();
-            //container.RegisterSingleton<IHostBlockCoordinator, HostBlockCoordinator>();
+            //container.Register(Component.For<IINIFile>()
+            //                            .UsingFactory(() => LoadINIFromApplicationFolder
+            container.RegisterSingleton<IHostBlockCoordinator, HostBlockCoordinator>();
             container.RegisterAllOneToOneResolutionsAsTransientFrom(typeof(WindsorBootstrapper).Assembly);
             return container;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NSubstitute;
@@ -60,7 +61,7 @@ namespace EasyBlock.Core.Tests
             var reader = Substitute.For<ITextFileReader>();
             var mergedIp = GetRandomIPv4Address();
             var mergedHost = GetRandomHostname();
-            reader.SetData(_startData.And(HostFile.MERGE_MARKER).And($"{mergedIp}\t{mergedHost}"));
+            reader.SetData(_startData.And(Constants.MERGE_MARKER).And($"{mergedIp}\t{mergedHost}"));
 
             //---------------Assert Precondition----------------
 
@@ -240,7 +241,7 @@ namespace EasyBlock.Core.Tests
                 writer.AppendLine(_startData[1]);
                 writer.AppendLine(_startData[2]);
                 writer.AppendLine(string.Empty);
-                writer.AppendLine(HostFile.MERGE_MARKER);
+                writer.AppendLine(Constants.MERGE_MARKER);
                 writer.AppendLine($"{ip}\t{host}");
                 writer.Persist();
             });
@@ -276,7 +277,7 @@ namespace EasyBlock.Core.Tests
                 writer.AppendLine(_startData[1]);
                 writer.AppendLine(_startData[2]);
                 writer.AppendLine(string.Empty);
-                writer.AppendLine(HostFile.MERGE_MARKER);
+                writer.AppendLine(Constants.MERGE_MARKER);
                 writer.AppendLine($"{ip}\t{host}");
                 writer.AppendLine($"{anotherIp}\t{anotherHost}");
                 writer.Persist();
@@ -397,6 +398,62 @@ namespace EasyBlock.Core.Tests
             //---------------Test Result -----------------------
             Assert.IsFalse(sut.Lines.Any(l => l.HostName == "a.b.d"));
         }
+
+        [Test]
+        public void Revert_ShouldRemoveAllMergeLines()
+        {
+            //---------------Set up test pack-------------------
+            var expectedIp = GetRandomIPv4Address();
+            var expectedHost = GetRandomHostname();
+            var sut = Create(CreateReaderFor($"{expectedIp}  {expectedHost}"));
+            var unexpectedIp = GetAnother(expectedIp, GetRandomIPv4Address);
+            var unexpectedHost = GetAnother(expectedHost, GetRandomHostname);
+            var mergeReader = CreateReaderFor($"{unexpectedIp}  {unexpectedHost}");
+            sut.Merge(mergeReader);
+
+            //---------------Assert Precondition----------------
+            sut.Lines.ShouldHaveUnique(l => l.IsPrimary && l.IPAddress == expectedIp && l.HostName == expectedHost);
+            sut.Lines.ShouldHaveUnique(l => !l.IsPrimary && l.IPAddress == unexpectedIp && l.HostName == unexpectedHost);
+
+            //---------------Execute Test ----------------------
+            sut.Revert();
+
+            //---------------Test Result -----------------------
+            sut.Lines.ShouldHaveUnique(l => l.IsPrimary && l.IPAddress == expectedIp && l.HostName == expectedHost);
+            Assert.IsFalse(sut.Lines.Any(l => !l.IsPrimary));
+        }
+
+        [Test]
+        public void Revert_WhenOriginalContainedMergeMarker_ShouldRemoveMergeMarker()
+        {
+            //---------------Set up test pack-------------------
+            var expectedIp = GetRandomIPv4Address();
+            var expectedHost = GetRandomHostname();
+            var unexpectedIp = GetAnother(expectedIp, GetRandomIPv4Address);
+            var unexpectedHost = GetAnother(expectedHost, GetRandomHostname);
+            var writer = Substitute.For<ITextFileWriter>();
+            var sut = Create(CreateReaderFor($"{expectedIp}  {expectedHost}",
+                                              Constants.MERGE_MARKER,
+                                              $"{unexpectedIp}  {unexpectedHost}"), writer);
+
+            //---------------Assert Precondition----------------
+            sut.Lines.ShouldHaveUnique(l => l.IsPrimary && l.IPAddress == expectedIp && l.HostName == expectedHost);
+            sut.Lines.ShouldHaveUnique(l => !l.IsPrimary && l.IPAddress == unexpectedIp && l.HostName == unexpectedHost);
+
+            //---------------Execute Test ----------------------
+            sut.Revert();
+            sut.Persist();
+
+            //---------------Test Result -----------------------
+            sut.Lines.ShouldHaveUnique(l => l.IsPrimary && l.IPAddress == expectedIp && l.HostName == expectedHost);
+            Assert.IsFalse(sut.Lines.Any(l => !l.IsPrimary));
+            Assert.IsFalse(sut.Lines.Any(l => l.Data == Constants.MERGE_MARKER));
+
+            writer.Received(1).AppendLine(Arg.Is<string>(s => s.Contains(expectedIp) && s.Contains(expectedHost)));
+            writer.DidNotReceive().AppendLine(Arg.Is<string>(s => s.Contains(unexpectedIp) && s.Contains(unexpectedHost)));
+            writer.DidNotReceive().AppendLine(Arg.Is<string>(s => s == Constants.MERGE_MARKER));
+        }
+
 
 
         private IHostFile Create(ITextFileReader reader = null,

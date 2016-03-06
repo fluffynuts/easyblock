@@ -46,17 +46,69 @@ namespace EasyBlock.Core
 
         public void Apply()
         {
+            UpdateBlocklists();
+            ApplyBlocklists();
+        }
+
+        public void Unapply()
+        {
+            var hostFile = OpenHostsFile();
+            hostFile.Revert();
+            hostFile.Persist();
+        }
+
+        private void ApplyBlocklists()
+        {
+            var hostFile = OpenHostsFile();
+            MergeBlocklistsInto(hostFile);
+            OverrideRedirectWithUserPreferenceOn(hostFile);
+            ApplyBlacklistOn(hostFile);
+            ApplyWhitelistOn(hostFile);
+            hostFile.Persist();
+        }
+
+        private void UpdateBlocklists()
+        {
             var blockLists = DownloadBlocklists();
             Cache(blockLists);
-            var hostFilePath = _settings.HostsFile;
-            var reader = _textFileReaderFactory.Open(hostFilePath);
-            var writer = _textFileWriterFactory.Open(hostFilePath);
-            var hostFile = _hostFileFactory.Create(reader, writer);
-            _settings.Sources.ForEach(url => Merge(url, hostFile));
-            hostFile.SetRedirectIp(_settings.RedirectIp);
-            _settings.Blacklist.ForEach(b => hostFile.Redirect(b, _settings.RedirectIp));
+        }
+
+        private void ApplyWhitelistOn(IHostFile hostFile)
+        {
             _settings.Whitelist.ForEach(regex => hostFile.Whitelist(regex));
-            hostFile.Persist();
+        }
+
+        private void ApplyBlacklistOn(IHostFile hostFile)
+        {
+            _settings.Blacklist.ForEach(b => hostFile.Redirect(b, _settings.RedirectIp));
+        }
+
+        private void OverrideRedirectWithUserPreferenceOn(IHostFile hostFile)
+        {
+            hostFile.SetRedirectIp(_settings.RedirectIp);
+        }
+
+        private void MergeBlocklistsInto(IHostFile hostFile)
+        {
+            _settings.Sources.ForEach(url => Merge(url, hostFile));
+        }
+
+        private IHostFile OpenHostsFile()
+        {
+            var reader = GetHostsFileReader();
+            var writer = GetHostsFileWriter();
+            var hostFile = _hostFileFactory.Create(reader, writer);
+            return hostFile;
+        }
+
+        private ITextFileReader GetHostsFileReader()
+        {
+            return _textFileReaderFactory.Open(_settings.HostsFile);
+        }
+
+        private ITextFileWriter GetHostsFileWriter()
+        {
+            return _textFileWriterFactory.Open(_settings.HostsFile);
         }
 
         private void Merge(string url, IHostFile hostFile)
@@ -83,11 +135,6 @@ namespace EasyBlock.Core
             var waitOn = tasks.Cast<Task>().ToArray();
             Task.WaitAll(waitOn);
             return tasks.Select(t => t.Result).ToArray();
-        }
-
-        public void Unapply()
-        {
-            throw new NotImplementedException();
         }
     }
 }
