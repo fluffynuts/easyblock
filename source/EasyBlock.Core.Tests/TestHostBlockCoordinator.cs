@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using PeanutButter.INIFile;
-using PeanutButter.RandomGenerators;
 using PeanutButter.TestUtils.Generic;
 using PeanutButter.Utils;
 using static PeanutButter.RandomGenerators.RandomValueGen;
@@ -29,7 +27,7 @@ namespace EasyBlock.Core.Tests
             //---------------Test Result -----------------------
         }
 
-        [TestCase("applicationConfiguration", typeof(IApplicationConfiguration))]
+        [TestCase("settings", typeof(ISettings))]
         [TestCase("fileDownloader", typeof(IFileDownloader))]
         [TestCase("hostFileFactory", typeof(IHostFileFactory))]
         [TestCase("textFileReaderFactory", typeof(ITextFileReaderFactory))]
@@ -74,7 +72,7 @@ namespace EasyBlock.Core.Tests
             //---------------Set up test pack-------------------
             var url1 = GetRandomHttpUrl();
             var url2 = GetRandomHttpUrl();
-            var config = Substitute.For<IApplicationConfiguration>();
+            var config = Substitute.For<ISettings>();
             config.Sources.Returns(new[] { url1, url2 });
             var downloader = Substitute.For<IFileDownloader>();
             var sut = Create(config, downloader);
@@ -95,7 +93,7 @@ namespace EasyBlock.Core.Tests
             //---------------Set up test pack-------------------
             var source1 = GetRandomHttpUrl();
             var source2 = GetRandomHttpUrl();
-            var config = ApplicationConfigurationBuilder.Create()
+            var config = SettingsBuilder.Create()
                             .WithSources(source1, source2)
                             .Build();
             var downloader = Substitute.For<IFileDownloader>();
@@ -122,7 +120,7 @@ namespace EasyBlock.Core.Tests
             //---------------Set up test pack-------------------
             var source1 = GetRandomHttpUrl();
             var source2 = GetRandomHttpUrl();
-            var config = ApplicationConfigurationBuilder.Create()
+            var config = SettingsBuilder.Create()
                             .WithSources(source1, source2)
                             .Build();
             var downloader = Substitute.For<IFileDownloader>();
@@ -158,10 +156,12 @@ namespace EasyBlock.Core.Tests
             cacheManager.GetReaderFor(source1).Returns(mergeReader1);
             var mergeReader2 = ReaderFor($"{expectedIp2}   {expectedHost2}");
             cacheManager.GetReaderFor(source2).Returns(mergeReader2);
-            var config = Substitute.For<IApplicationConfiguration>();
-            config.Sources.Returns(new[] { source1, source2 });
             var hostFilePath = GetRandomWindowsPath();
-            config.HostsFile.Returns(hostFilePath);
+            var settings = SettingsBuilder.Create()
+                                .WithSources(source1, source2)
+                                .WithHostFile(hostFilePath)
+                                .WithRedirectIp(GetRandomIPv4Address())
+                                .Build();
             var reader = Substitute.For<ITextFileReader>();
             var writer = Substitute.For<ITextFileWriter>();
             var readerFactory = Substitute.For<ITextFileReaderFactory>();
@@ -171,7 +171,7 @@ namespace EasyBlock.Core.Tests
             var hostFileFactory = Substitute.For<IHostFileFactory>();
             var hostFile = Substitute.For<IHostFile>();
             hostFileFactory.Create(reader, writer).Returns(hostFile);
-            var sut = Create(config, 
+            var sut = Create(settings, 
                                 hostFileFactory:hostFileFactory, 
                                 blocklistCacheManager:cacheManager,
                                 textFileReaderFactory: readerFactory,
@@ -195,23 +195,77 @@ namespace EasyBlock.Core.Tests
                 cacheManager.GetReaderFor(source2);
                 hostFile.Merge(mergeReader2);
 
+                hostFile.SetRedirectIp(settings.RedirectIp);
+
                 hostFile.Persist();
 
             });
         }
 
         [Test]
-        [Ignore("WIP")]
-        public void Apply_ShouldAddUserBlackListItems()
+        public void Apply_ShouldAddUserBlacklistItems()
         {
             //---------------Set up test pack-------------------
+            var expected = GetRandomCollection<string>(GetRandomHostname, 2, 5);
+            var settings = SettingsBuilder.Create()
+                                .WithRedirectIp(GetRandomIPv4Address())
+                                .WithBlacklist(expected.ToArray())
+                                .Build();
+            var hostFile = Substitute.For<IHostFile>();
+            var factory = CreateHostFileFactoryFor(hostFile);
+            var sut = Create(settings, hostFileFactory: factory);
 
             //---------------Assert Precondition----------------
 
             //---------------Execute Test ----------------------
+            sut.Apply();
 
             //---------------Test Result -----------------------
-            Assert.Fail("Test Not Yet Implemented");
+            Received.InOrder(() =>
+            {
+                expected.ForEach(e =>
+                    hostFile.Redirect(e, settings.RedirectIp));
+                hostFile.Persist();
+            });
+        }
+
+        [Test]
+        public void Apply_ShouldApplyUserWhitelistItems()
+        {
+            //---------------Set up test pack-------------------
+            var blacklist = GetRandomCollection<string>(GetRandomHostname, 2, 5);
+            var whitelist = GetRandomCollection<string>(GetRandomHostname, 2, 5);
+            var settings = SettingsBuilder.Create()
+                                .WithRedirectIp(GetRandomIPv4Address())
+                                .WithWhitelist(whitelist.ToArray())
+                                .WithBlacklist(blacklist.ToArray())
+                                .Build();
+            var hostFile = Substitute.For<IHostFile>();
+            var factory = CreateHostFileFactoryFor(hostFile);
+            var sut = Create(settings, hostFileFactory: factory);
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Apply();
+
+            //---------------Test Result -----------------------
+            Received.InOrder(() =>
+            {
+                blacklist.ForEach(e =>
+                    hostFile.Redirect(e, settings.RedirectIp));
+                whitelist.ForEach(e =>
+                    hostFile.Whitelist(e));
+                hostFile.Persist();
+            });
+        }
+
+
+        private IHostFileFactory CreateHostFileFactoryFor(IHostFile hostFile)
+        {
+            var factory = Substitute.For<IHostFileFactory>();
+            factory.Create(Arg.Any<ITextFileReader>(), Arg.Any<ITextFileWriter>())
+                    .Returns(hostFile);
+            return factory;
         }
 
         [Test]
@@ -254,36 +308,7 @@ namespace EasyBlock.Core.Tests
         }
 
 
-        public class ApplicationConfigurationBuilder: GenericBuilder<ApplicationConfigurationBuilder, IApplicationConfiguration>
-        {
-            public override IApplicationConfiguration ConstructEntity()
-            {
-                return Substitute.For<IApplicationConfiguration>();
-            }
-
-            public ApplicationConfigurationBuilder()
-            {
-                WithInterval(Constants.Defaults.ONE_DAY)
-                    .WithHostFile(Constants.Defaults.WINDOWS_HOSTS_FILE_LOCATION);
-            }
-
-            public ApplicationConfigurationBuilder WithHostFile(string path)
-            {
-                return WithProp(o => o.HostsFile.Returns(path));
-            }
-
-            public ApplicationConfigurationBuilder WithInterval(int interval)
-            {
-                return WithProp(o => o.RefreshIntervalInMinutes.Returns(interval));
-            }
-
-            public ApplicationConfigurationBuilder WithSources(params string[] sources)
-            {
-                return WithProp(o => o.Sources.Returns(sources));
-            }
-        }
-
-        private IHostBlockCoordinator Create(IApplicationConfiguration applicationConfiguration = null, 
+        private IHostBlockCoordinator Create(ISettings settings = null, 
                                             IFileDownloader downloader = null,
                                             IHostFileFactory hostFileFactory = null,
                                             ITextFileReaderFactory textFileReaderFactory = null,
@@ -291,7 +316,7 @@ namespace EasyBlock.Core.Tests
                                             IBlocklistCacheManager blocklistCacheManager = null)
         {
             return new HostBlockCoordinator(
-                applicationConfiguration ?? Substitute.For<IApplicationConfiguration>(),
+                settings ?? Substitute.For<ISettings>(),
                 downloader ?? Substitute.For<IFileDownloader>(),
                 hostFileFactory ?? Substitute.For<IHostFileFactory>(),
                 textFileReaderFactory ?? Substitute.For<ITextFileReaderFactory>(),
@@ -299,37 +324,5 @@ namespace EasyBlock.Core.Tests
                 blocklistCacheManager ?? Substitute.For<IBlocklistCacheManager>());
         }
 
-        private IINIFile CreateIniFileFor(string[] iniData)
-        {
-            var iniFile = new INIFile();
-            iniFile.Parse(string.Join(Environment.NewLine, iniData));
-            return iniFile;
-        }
-    }
-
-    public static class FileDownloaderExtensions
-    {
-        public static void SetDownloadResult(this IFileDownloader downloader, string url, byte[] data)
-        {
-            var downloadResult = Substitute.For<IDownloadResult>();
-            downloadResult.Success.Returns(true);
-            downloadResult.Data.Returns(data);
-            downloadResult.Url.Returns(url);
-            downloader.SetDownloadResult(url, downloadResult);
-        }
-
-        public static void SetDownloadResult(this IFileDownloader downloader, string url, IDownloadResult downloadResult)
-        {
-            downloader.DownloadDataAsync(url).Returns(Task.Run(() => downloadResult));
-        }
-
-        public static void SetFailedDownloadResultFor(this IFileDownloader downloader, string url)
-        {
-            var downloadResult = Substitute.For<IDownloadResult>();
-            downloadResult.Url.Returns(url);
-            downloadResult.Success.Returns(false);
-            downloadResult.Data.Returns((byte[])null);
-            downloader.SetDownloadResult(url, downloadResult);
-        }
     }
 }

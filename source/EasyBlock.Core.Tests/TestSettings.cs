@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using NSubstitute;
 using NUnit.Framework;
 using PeanutButter.INIFile;
 using PeanutButter.TestUtils.Generic;
@@ -11,18 +10,18 @@ using static EasyBlock.Core.Constants;
 namespace EasyBlock.Core.Tests
 {
     [TestFixture]
-    public class TestApplicationConfiguration
+    public class TestSettings
     {
         [Test]
         public void Type_ShouldImplement_IAppSettings()
         {
             //---------------Set up test pack-------------------
-            var sut = typeof(ApplicationConfiguration);
+            var sut = typeof(Settings);
 
             //---------------Assert Precondition----------------
 
             //---------------Execute Test ----------------------
-            sut.ShouldImplement<IApplicationConfiguration>();
+            sut.ShouldImplement<ISettings>();
 
             //---------------Test Result -----------------------
         }
@@ -35,7 +34,7 @@ namespace EasyBlock.Core.Tests
             //---------------Assert Precondition----------------
 
             //---------------Execute Test ----------------------
-            ConstructorTestUtils.ShouldExpectNonNullParameterFor<ApplicationConfiguration>(parameterName, parameterType);
+            ConstructorTestUtils.ShouldExpectNonNullParameterFor<Settings>(parameterName, parameterType);
 
             //---------------Test Result -----------------------
         }
@@ -277,9 +276,45 @@ namespace EasyBlock.Core.Tests
         }
 
 
-        private IApplicationConfiguration Create(IINIFile iniFile)
+        [Test]
+        public void Construct_WhenHaveNoRedirectIp_ShouldSetTo_127_0_0_1()
         {
-            return new ApplicationConfiguration(iniFile);
+            //---------------Set up test pack-------------------
+            var iniFile = new INIFile();
+
+            //---------------Assert Precondition----------------
+            Assert.IsFalse(iniFile.HasSection(Sections.SETTINGS));
+
+            //---------------Execute Test ----------------------
+            var sut = Create(iniFile);
+            var result = sut.RedirectIp;
+
+            //---------------Test Result -----------------------
+            Assert.AreEqual(Defaults.REDIRECT_IP, result);
+        }
+
+        [Test]
+        public void Construct_WhenHaveInvalidRedirectIp_ShouldSetTo_127_0_0_1()
+        {
+            //---------------Set up test pack-------------------
+            var iniFile = new INIFile();
+            iniFile["settings"]["RedirectIp"] = GetRandomString();
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var sut = Create(iniFile);
+            var result = sut.RedirectIp;
+
+            //---------------Test Result -----------------------
+            Assert.AreEqual(Defaults.REDIRECT_IP, result);
+        }
+
+
+
+        private ISettings Create(IINIFile iniFile)
+        {
+            return new Settings(iniFile);
         }
     }
 

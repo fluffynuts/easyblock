@@ -11,12 +11,12 @@ namespace EasyBlock.Core
 
     public class CacheFilenameGenerator: ICacheFilenameGenerator
     {
-        private readonly IApplicationConfiguration _applicationConfiguration;
+        private readonly ISettings _settings;
 
-        public CacheFilenameGenerator(IApplicationConfiguration applicationConfiguration)
+        public CacheFilenameGenerator(ISettings settings)
         {
-            if (applicationConfiguration == null) throw new ArgumentNullException(nameof(applicationConfiguration));
-            _applicationConfiguration = applicationConfiguration;
+            if (settings == null) throw new ArgumentNullException(nameof(settings));
+            _settings = settings;
         }
 
         public string GenerateFor(string sourceUrl)
@@ -24,7 +24,7 @@ namespace EasyBlock.Core
             var cacheFile = sourceUrl?.AsBytes()?.ToMD5String();
             if (cacheFile == null)
                 return null;
-            return Path.Combine(_applicationConfiguration.CacheFolder, cacheFile);
+            return Path.Combine(_settings.CacheFolder, cacheFile);
         }
     }
 }

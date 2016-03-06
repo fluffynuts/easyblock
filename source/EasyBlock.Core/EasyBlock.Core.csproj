@@ -61,7 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationConfiguration.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="BlocklistCacheManager.cs" />
     <Compile Include="CacheFilenameGenerator.cs" />
     <Compile Include="Constants.cs" />
@@ -71,7 +71,7 @@
     <Compile Include="HostBlockCoordinator.cs" />
     <Compile Include="HostFileFactory.cs" />
     <Compile Include="HostFileLine.cs" />
-    <Compile Include="IApplicationConfiguration.cs" />
+    <Compile Include="ISettings.cs" />
     <Compile Include="IBlocklistCacheManager.cs" />
     <Compile Include="IDownloadResult.cs" />
     <Compile Include="IFileDownloader.cs" />

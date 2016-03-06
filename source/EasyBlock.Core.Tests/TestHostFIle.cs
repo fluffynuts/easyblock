@@ -284,10 +284,125 @@ namespace EasyBlock.Core.Tests
 
         }
 
+        [Test]
+        public void SetRedirectIp_ShouldUpdateAllMergeLinesToUseRedirectIp()
+        {
+            //---------------Set up test pack-------------------
+            var initialReader = CreateReaderFor("# this is the original file", "127.0.0.1 localhost");
+            var originalDomain = GetRandomHostname();
+            var originalIp = GetRandomIPv4Address();
+            var redirectIp = GetAnother(originalIp, GetRandomIPv4Address);
+            var mergeReader = CreateReaderFor($"{originalIp}  {originalDomain}");
+            var sut = Create(initialReader);
+            sut.Merge(mergeReader);
+
+            //---------------Assert Precondition----------------
+            Assert.IsTrue(sut.Lines.Any(l => l.HostName == originalDomain && 
+                                                l.IPAddress == originalIp && 
+                                                !l.IsPrimary));
+            Assert.IsFalse(sut.Lines.Any(l => l.HostName == originalDomain && 
+                                                l.IPAddress == redirectIp && 
+                                                !l.IsPrimary));
+
+            //---------------Execute Test ----------------------
+            sut.SetRedirectIp(redirectIp);
+
+            //---------------Test Result -----------------------
+            Assert.IsTrue(sut.Lines.Any(l => l.HostName == originalDomain && 
+                                                l.IPAddress == redirectIp && 
+                                                !l.IsPrimary));
+            Assert.IsFalse(sut.Lines.Any(l => l.HostName == originalDomain && 
+                                                l.IPAddress == originalIp && 
+                                                !l.IsPrimary));
+
+
+        }
+
+
+        [Test]
+        public void Redirect_GivenDomainAndIpAddress_ShouldAddToLines()
+        {
+            //---------------Set up test pack-------------------
+            var sut = Create();
+            var ip = GetRandomIPv4Address();
+            var host = GetRandomHostname();
+
+            //---------------Assert Precondition----------------
+            CollectionAssert.IsEmpty(sut.Lines);
+
+            //---------------Execute Test ----------------------
+            sut.Redirect(host, ip);
+
+            //---------------Test Result -----------------------
+            Assert.IsTrue(sut.Lines.Any(l => !l.IsPrimary &&
+                                                l.IPAddress == ip  &&
+                                                l.HostName == host));
+        }
+
+        [Test]
+        public void Whitelist_GivenUnknownDomain_ShouldChangeNothing()
+        {
+            //---------------Set up test pack-------------------
+            var sut = Create(CreateReaderFor("127.0.0.1 localhost"));
+            var whitelist = "a.b.*";
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Whitelist(whitelist);
+
+            //---------------Test Result -----------------------
+            var existing = sut.Lines.Single();
+            Assert.IsTrue(existing.IsPrimary);
+            Assert.AreEqual("127.0.0.1", existing.IPAddress);
+            Assert.AreEqual("localhost", existing.HostName);
+
+        }
+
+        [Test]
+        public void Whitelist_GivenDomainPrimarySection_ShouldChangeNothing()
+        {
+            //---------------Set up test pack-------------------
+            var expectedIp = "192.168.1.1";
+            var expectedHost = "a.b.c";
+            var sut = Create(CreateReaderFor("127.0.0.1 localhost", $"{expectedIp}  {expectedHost}"));
+            var whitelist = "a.b.*";
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Whitelist(whitelist);
+
+            //---------------Test Result -----------------------
+            Assert.AreEqual(2, sut.Lines.Count());
+            Assert.IsTrue(sut.Lines.Any(l => l.IsPrimary && l.HostName == "localhost" && l.IPAddress == "127.0.0.1"));
+            Assert.IsTrue(sut.Lines.Any(l => l.IsPrimary && l.HostName == expectedHost && l.IPAddress == expectedIp));
+        }
+
+        [Test]
+        public void Whitelist_GivenDomainWhichMatchesPrimaryAndMergeDomain_ShouldOnlyRemoveMergeItem()
+        {
+            //---------------Set up test pack-------------------
+            var expectedIp = "192.168.1.1";
+            var expectedHost = "a.b.c";
+            var sut = Create(CreateReaderFor("127.0.0.1 localhost", $"{expectedIp}  {expectedHost}"));
+            sut.Redirect("a.b.d", "127.0.0.1");
+            var whitelist = "a.b.*";
+            
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Whitelist(whitelist);
+
+            //---------------Test Result -----------------------
+            Assert.IsFalse(sut.Lines.Any(l => l.HostName == "a.b.d"));
+        }
+
+
         private IHostFile Create(ITextFileReader reader = null,
                                     ITextFileWriter writer = null)
         {
-            return new HostFile(reader ?? Substitute.For<ITextFileReader>(), 
+            return new HostFile(reader ?? CreateReaderFor(new string[] { }),
                                 writer ?? Substitute.For<ITextFileWriter>());
         }
 

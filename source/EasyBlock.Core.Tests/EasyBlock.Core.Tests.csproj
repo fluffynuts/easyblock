@@ -82,9 +82,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollectionOfHostLinesExtensions.cs" />
+    <Compile Include="FileDownloaderExtensions.cs" />
     <Compile Include="IniBuilder.cs" />
     <Compile Include="HostFileLineComparer.cs" />
-    <Compile Include="TestApplicationConfiguration.cs" />
+    <Compile Include="SettingsBuilder.cs" />
+    <Compile Include="TestSettings.cs" />
     <Compile Include="TestBlocklistCacheManager.cs" />
     <Compile Include="TestCacheFilenameGenerator.cs" />
     <Compile Include="TestExtensionsForTextFileReader.cs" />

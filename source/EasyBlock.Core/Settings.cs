@@ -9,7 +9,7 @@ using static EasyBlock.Core.Constants;
 
 namespace EasyBlock.Core
 {
-    public class ApplicationConfiguration: IApplicationConfiguration
+    public class Settings: ISettings
     {
         public int RefreshIntervalInMinutes { get; private set; }
         public string HostsFile { get; private set; }
@@ -17,11 +17,12 @@ namespace EasyBlock.Core
         public IEnumerable<string> Sources => _sources;
         public IEnumerable<string> Blacklist => _blacklist;
         public IEnumerable<string> Whitelist => _whitelist;
+        public string RedirectIp { get; private set; }
         private readonly List<string> _blacklist = new EditableList<string>();
         private readonly List<string> _whitelist = new EditableList<string>();
         private readonly List<string> _sources = new EditableList<string>();
 
-        public ApplicationConfiguration(IINIFile iniFile)
+        public Settings(IINIFile iniFile)
         {
             if (iniFile == null) throw new ArgumentNullException(nameof(iniFile));
             LoadFrom(iniFile);
@@ -70,6 +71,23 @@ namespace EasyBlock.Core
                 Defaults.WINDOWS_HOSTS_FILE_LOCATION
             );
             CacheFolder = getSetting(Keys.CACHE_FOLDER, DetermineDefaultCacheFolder());
+            var redirectIp = getSetting(Keys.REDIRECT_IP, Defaults.REDIRECT_IP);
+            RedirectIp = IsValidIp(redirectIp) ? redirectIp : Defaults.REDIRECT_IP;
+        }
+
+        private bool IsValidIp(string redirectIp)
+        {
+            var parts = (redirectIp ?? "").Split('.');
+            return parts.Length == 4 &&
+                    parts.All(IsOctetValue);
+        }
+
+        private bool IsOctetValue(string stringValue)
+        {
+            int intValue;
+            if (int.TryParse(stringValue, out intValue))
+                return intValue > -1 && intValue < 256;
+            return false;
         }
 
         private string DetermineDefaultCacheFolder()

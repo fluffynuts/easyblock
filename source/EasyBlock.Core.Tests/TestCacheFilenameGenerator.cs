@@ -19,7 +19,7 @@ namespace EasyBlock.Core.Tests
             //---------------Assert Precondition----------------
 
             //---------------Execute Test ----------------------
-            Assert.Throws<ArgumentNullException>(() => new CacheFilenameGenerator((IApplicationConfiguration)null));
+            Assert.Throws<ArgumentNullException>(() => new CacheFilenameGenerator((ISettings)null));
 
             //---------------Test Result -----------------------
         }
@@ -43,7 +43,7 @@ namespace EasyBlock.Core.Tests
         public void GenerateFor_ShouldReturnPathUnderConfiguredCachePath()
         {
             //---------------Set up test pack-------------------
-            var appSettings = Substitute.For<IApplicationConfiguration>();
+            var appSettings = Substitute.For<ISettings>();
             var cacheFolder = GetRandomWindowsPath();
             appSettings.CacheFolder.Returns(cacheFolder);
             var sourceUrl = GetRandomHttpUrl() + "/somepath?arg1=value1&arg2=value2";
@@ -60,9 +60,9 @@ namespace EasyBlock.Core.Tests
             Assert.AreEqual(expected, result);
         }
 
-        private ICacheFilenameGenerator Create(IApplicationConfiguration applicationConfiguration)
+        private ICacheFilenameGenerator Create(ISettings settings)
         {
-            return new CacheFilenameGenerator(applicationConfiguration);
+            return new CacheFilenameGenerator(settings);
         }
     }
 }

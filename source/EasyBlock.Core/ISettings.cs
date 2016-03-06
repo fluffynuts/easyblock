@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace EasyBlock.Core
 {
-    public interface IApplicationConfiguration
+    public interface ISettings
     {
         int RefreshIntervalInMinutes { get; }
         string HostsFile { get; }
@@ -10,5 +10,6 @@ namespace EasyBlock.Core
         IEnumerable<string> Sources { get; }
         IEnumerable<string> Blacklist { get; }
         IEnumerable<string> Whitelist { get; }
+        string RedirectIp { get; }
     }
 }

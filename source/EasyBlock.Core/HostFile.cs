@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using PeanutButter.Utils;
 
 namespace EasyBlock.Core
@@ -10,6 +11,9 @@ namespace EasyBlock.Core
         IEnumerable<IHostFileLine> Lines { get; }
         void Merge(ITextFileReader reader);
         void Persist();
+        void SetRedirectIp(string redirectIp);
+        void Redirect(string host, string ip);
+        void Whitelist(string regex);
     }
 
     public class HostFile: IHostFile
@@ -42,6 +46,24 @@ namespace EasyBlock.Core
                 PersistMergeLines();
             }
             _writer.Persist();
+        }
+
+        public void SetRedirectIp(string redirectIp)
+        {
+            Lines.Where(l => !l.IsPrimary)
+                    .ForEach(l => l.IPAddress = redirectIp);
+        }
+
+        public void Redirect(string host, string ip)
+        {
+            AddMergeLine($"{ip} {host}");
+        }
+
+        public void Whitelist(string regex)
+        {
+            var re = new Regex(regex);
+            _lines.RemoveAll(l => !l.IsPrimary &&
+                                    re.IsMatch(l.HostName));
         }
 
         private void PersistMergeLines()

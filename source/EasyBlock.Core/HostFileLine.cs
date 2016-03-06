@@ -8,7 +8,7 @@ namespace EasyBlock.Core
         string Data { get; }
         bool IsComment { get; }
         // ReSharper disable once InconsistentNaming
-        string IPAddress { get; }
+        string IPAddress { get; set; }
         string HostName { get; }
         bool IsPrimary { get; }
     }
@@ -17,7 +17,7 @@ namespace EasyBlock.Core
     {
         public string Data { get; private set; } = string.Empty;
         public bool IsComment { get; private set;  }
-        public string IPAddress { get; private set; } = string.Empty;
+        public string IPAddress { get; set; } = string.Empty;
         public string HostName { get; private set;  } = string.Empty;
         public bool IsPrimary { get; private set; }
 
