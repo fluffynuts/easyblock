@@ -54,6 +54,14 @@
       <HintPath>..\packages\NUnit.3.0.1\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PeanutButter.INI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PeanutButter.INI.1.2.10\lib\net45\PeanutButter.INI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PeanutButter.RandomGenerators, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PeanutButter.RandomGenerators.1.2.10\lib\net45\PeanutButter.RandomGenerators.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PeanutButter.ServiceShell, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PeanutButter.ServiceShell.1.2.10\lib\net45\PeanutButter.ServiceShell.dll</HintPath>
       <Private>True</Private>
@@ -89,6 +97,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EasyBlock.Core\EasyBlock.Core.csproj">
+      <Project>{555A5EB3-5A71-421D-B9A5-780EB2E255A3}</Project>
+      <Name>EasyBlock.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EasyBlock.Win32Service\EasyBlock.Win32Service.csproj">
       <Project>{CE4DDCC2-B3E7-42F3-A087-B8CFE81EC09A}</Project>
       <Name>EasyBlock.Win32Service</Name>

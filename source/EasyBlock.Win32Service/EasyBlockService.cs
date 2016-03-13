@@ -16,8 +16,23 @@ namespace EasyBlock.Win32Service
         public EasyBlockService(IWindsorContainer container)
         {
             _container = container;
-            DisplayName = "Easy Block AdBlocker";
+            DisplayName = "EasyBlock AdBlocker";
             ServiceName = "EasyBlock";
+            _container = container;
+            Interval = _container.Resolve<ISettings>().RefreshIntervalInMinutes * 60;
+        }
+
+        protected override void RunOnce()
+        {
+            var coordinator = _container.Resolve<IHostBlockCoordinator>();
+            coordinator.Apply();
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+            var coordinator = _container.Resolve<IHostBlockCoordinator>();
+
         }
     }
 }
