@@ -1,6 +1,10 @@
 ﻿using System;
+using System.IO;
 using Castle.Windsor;
 using NUnit.Framework;
+using PeanutButter.INIFile;
+using PeanutButter.Utils;
+using static PeanutButter.RandomGenerators.RandomValueGen;
 
 namespace EasyBlock.Core.Tests
 {
@@ -41,7 +45,34 @@ namespace EasyBlock.Core.Tests
         }
 
         [Test]
-        [Ignore("WIP: container needs to know how to resolve INI factory and ISettings first")]
+        public void Resolve_INIFile_ShouldResolveNewINIFileFromApplicationFolder()
+        {
+            //---------------Set up test pack-------------------
+            var asmPath = new Uri(typeof(WindsorBootstrapper).Assembly.CodeBase).LocalPath;
+            var asmFolder = Path.GetDirectoryName(asmPath);
+            var iniPath = Path.Combine(asmFolder, "EasyBlock.ini");
+            using (new AutoDeleter(iniPath))
+            {
+                var iniFile = new INIFile(iniPath);
+                var expected = GetRandomInt(5, 55).ToString();
+                iniFile["settings"]["RefreshIntervalInMinutes"] = expected;
+                iniFile.Persist();
+                var container = WindsorBootstrapper.Bootstrap();
+                //---------------Assert Precondition----------------
+                Assert.IsTrue(File.Exists(iniPath));
+
+                //---------------Execute Test ----------------------
+                var resolvedIni = container.Resolve<IINIFile>();
+                var result = resolvedIni["settings"]["RefreshIntervalInMinutes"];
+
+                //---------------Test Result -----------------------
+                Assert.AreEqual(expected, result);
+
+            }
+        }
+
+
+        [Test]
         public void Container_ShouldResolveHostBlockCoordinator_ToSingleton()
         {
             //---------------Set up test pack-------------------

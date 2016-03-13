@@ -112,7 +112,7 @@ namespace EasyBlock.Core.Tests
             var lines = new[] {"first line"};
             using (var tempFile = new AutoTempFile())
             {
-                File.WriteAllBytes(tempFile.Path, Encoding.UTF8.GetBytes(string.Join(Environment.NewLine, lines)));
+                File.WriteAllLines(tempFile.Path, lines);
                 var sut = Create(tempFile.Path);
                 //---------------Assert Precondition----------------
 
@@ -126,6 +126,26 @@ namespace EasyBlock.Core.Tests
                 //---------------Test Result -----------------------
             }
         }
+
+        [Test]
+        public void Dispose_ShouldDisposeUnderlyingReader_AndSubsequentCallsToReadLine_ShouldReturnNull()
+        {
+            //---------------Set up test pack-------------------
+            using (var tempFile = new AutoTempFile())
+            {
+                File.WriteAllLines(tempFile.Path, RandomValueGen.GetRandomCollection<string>(2,2).ToArray());
+                var sut = Create(tempFile.Path);
+                //---------------Assert Precondition----------------
+
+                //---------------Execute Test ----------------------
+                sut.Dispose();
+                var result = sut.ReadLine();
+
+                //---------------Test Result -----------------------
+                Assert.IsNull(result);
+            }
+        }
+
 
         private ITextFileReader Create(string fileName)
         {
