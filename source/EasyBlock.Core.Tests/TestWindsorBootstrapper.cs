@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
 using Castle.Windsor;
+using log4net;
+using log4net.Config;
 using NUnit.Framework;
 using PeanutButter.INIFile;
+using PeanutButter.ServiceShell;
 using PeanutButter.Utils;
 using static PeanutButter.RandomGenerators.RandomValueGen;
 
@@ -29,6 +32,7 @@ namespace EasyBlock.Core.Tests
         [TestCase(typeof(ITextFileWriterFactory), typeof(TextFileWriterFactory))]
         [TestCase(typeof(IHostFileFactory), typeof(HostFileFactory))]
         [TestCase(typeof(IFileDownloader), typeof(FileDownloader))]
+        [TestCase(typeof(ISimpleLoggerFacade), typeof(SimpleLoggerFacade))]
         public void Container_ShouldResolve_(Type serviceType, Type expectedResolution)
         {
             //---------------Set up test pack-------------------
@@ -70,7 +74,6 @@ namespace EasyBlock.Core.Tests
 
             }
         }
-
 
         [Test]
         public void Container_ShouldResolveHostBlockCoordinator_ToSingleton()

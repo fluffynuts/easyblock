@@ -141,7 +141,33 @@ namespace EasyBlock.Win32Service.Tests
 
             //---------------Test Result -----------------------
             coordinator.Received(1).Apply();
+        }
 
+        [Test]
+        public void RunOnce_ShouldInjectSelfAsSimpleLoggerBeforeInstructHostBlockCoordinator_To_Apply()
+        {
+            //---------------Set up test pack-------------------
+            var container = Substitute.For<IWindsorContainer>();
+            var simpleLoggerFacade = Substitute.For<ISimpleLoggerFacade>();
+            var coordinator = Substitute.For<IHostBlockCoordinator>();
+            container.Resolve<IHostBlockCoordinator>().Returns(coordinator);
+            container.Resolve<ISimpleLoggerFacade>().Returns(simpleLoggerFacade);
+            var sut = CreateWithRunOnce(container);
+
+            //---------------Assert Precondition----------------
+            coordinator.DidNotReceive().Apply();
+
+            //---------------Execute Test ----------------------
+            sut._RunOnce_();
+
+            //---------------Test Result -----------------------
+            Received.InOrder(() =>
+            {
+                container.Resolve<ISimpleLoggerFacade>();
+                simpleLoggerFacade.SetLogger(sut);
+                container.Resolve<IHostBlockCoordinator>();
+                coordinator.Apply();
+            });
         }
 
         [Test]
@@ -160,6 +186,53 @@ namespace EasyBlock.Win32Service.Tests
             //---------------Test Result -----------------------
             container.Received(1).Resolve<IHostBlockCoordinator>();
         }
+
+
+        [Test]
+        public void Stop_ShouldInstructCoordinator_ToUnapply()
+        {
+            //---------------Set up test pack-------------------
+            var container = Substitute.For<IWindsorContainer>();
+            var coordinator = Substitute.For<IHostBlockCoordinator>();
+            container.Resolve<IHostBlockCoordinator>().Returns(coordinator);
+            var sut = Create(container);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Stop();
+
+            //---------------Test Result -----------------------
+            coordinator.Received(1).Unapply();
+        }
+
+
+        [Test]
+        public void Stop_ShouldInjectSelfAsSimpleLoggerBeforeInstructingCoordinator_ToUnapply()
+        {
+            //---------------Set up test pack-------------------
+            var container = Substitute.For<IWindsorContainer>();
+            var coordinator = Substitute.For<IHostBlockCoordinator>();
+            var logFacade = Substitute.For<ISimpleLoggerFacade>();
+            container.Resolve<ISimpleLoggerFacade>().Returns(logFacade);
+            container.Resolve<IHostBlockCoordinator>().Returns(coordinator);
+            var sut = Create(container);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Stop();
+
+            //---------------Test Result -----------------------
+            Received.InOrder(() =>
+            {
+                container.Resolve<ISimpleLoggerFacade>();
+                logFacade.SetLogger(sut);
+                container.Resolve<IHostBlockCoordinator>();
+                coordinator.Unapply();
+            });
+        }
+
 
 
 

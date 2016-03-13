@@ -24,15 +24,23 @@ namespace EasyBlock.Win32Service
 
         protected override void RunOnce()
         {
+            SetupLogging();
             var coordinator = _container.Resolve<IHostBlockCoordinator>();
             coordinator.Apply();
+        }
+
+        private void SetupLogging()
+        {
+            var loggerFacade = _container.Resolve<ISimpleLoggerFacade>();
+            loggerFacade.SetLogger(this);
         }
 
         protected override void OnStop()
         {
             base.OnStop();
+            SetupLogging();
             var coordinator = _container.Resolve<IHostBlockCoordinator>();
-
+            coordinator.Unapply();
         }
     }
 }
