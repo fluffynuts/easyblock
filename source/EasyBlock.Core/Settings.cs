@@ -92,8 +92,7 @@ namespace EasyBlock.Core
 
         private string DetermineDefaultCacheFolder()
         {
-            var appPath = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
-            var appFolder = Path.GetDirectoryName(appPath);
+            var appFolder = ExecutingAssemblyPathFinder.GetExecutingAssemblyFolder();
             return Path.Combine(appFolder, "cache");
         }
     }

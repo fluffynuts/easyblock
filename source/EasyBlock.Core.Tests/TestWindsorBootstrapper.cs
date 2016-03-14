@@ -54,7 +54,7 @@ namespace EasyBlock.Core.Tests
             //---------------Set up test pack-------------------
             var asmPath = new Uri(typeof(WindsorBootstrapper).Assembly.CodeBase).LocalPath;
             var asmFolder = Path.GetDirectoryName(asmPath);
-            var iniPath = Path.Combine(asmFolder, "EasyBlock.ini");
+            var iniPath = Path.Combine(asmFolder, Constants.CONFIG_FILE);
             using (new AutoDeleter(iniPath))
             {
                 var iniFile = new INIFile(iniPath);

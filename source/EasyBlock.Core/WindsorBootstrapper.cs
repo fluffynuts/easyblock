@@ -25,7 +25,7 @@ namespace EasyBlock.Core
             var asmPath = new Uri(typeof(WindsorBootstrapper).Assembly.CodeBase).LocalPath;
             var programFolder = Path.GetDirectoryName(asmPath);
             // ReSharper disable once AssignNullToNotNullAttribute
-            var iniPath = Path.Combine(programFolder, "EasyBlock.ini");
+            var iniPath = Path.Combine(programFolder, Constants.CONFIG_FILE);
             return new INIFile(iniPath);
         }
     }

@@ -28,23 +28,9 @@ namespace EasyBlock.Core
             return Path.Combine(CacheFolder, cacheFile);
         }
 
-        private string CacheFolder
-        {
-            get
-            {
-                return Path.IsPathRooted(_settings.CacheFolder)
-                        ? _settings.CacheFolder
-                        : Path.Combine(GetExecutingAssemblyFolder(), _settings.CacheFolder);
-            }
-        }
-
-        private string GetExecutingAssemblyFolder()
-        {
-            return Assembly.GetExecutingAssembly()
-                            .CodeBase
-                            .AsLocalPath()
-                            .GetFolder();
-        }
+        private string CacheFolder => Path.IsPathRooted(_settings.CacheFolder)
+                                        ? _settings.CacheFolder
+                                        : Path.Combine(ExecutingAssemblyPathFinder.GetExecutingAssemblyFolder(), _settings.CacheFolder);
     }
 
 }
