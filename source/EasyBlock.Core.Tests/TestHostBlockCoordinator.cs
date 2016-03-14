@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using PeanutButter.INIFile;
@@ -324,6 +326,227 @@ namespace EasyBlock.Core.Tests
             });
         }
 
+        [Test]
+        public void Apply_ShouldLogSuccessfulAndFailedDownloadStates()
+        {
+            //---------------Set up test pack-------------------
+            var settings = Substitute.For<ISettings>();
+            var sources = GetRandomCollection(GetRandomHttpUrl, 2, 2);
+            settings.Sources.Returns(sources);
+            var downloader = Substitute.For<IFileDownloader>();
+            var successfulSource = sources.First();
+            var failedSource = sources.Last();
+            var expectedFailureString = GetRandomString();
+            downloader.DownloadDataAsync(successfulSource).Returns(ci =>
+            {
+                return Task.Run(() => CreateSuccessfulDownloadResultFor(successfulSource));
+            });
+            downloader.DownloadDataAsync(failedSource).Returns(ci =>
+            {
+                return Task.Run(() => CreateFailedDownloadResultFor(failedSource, expectedFailureString));
+            });
+            var logger = Substitute.For<ISimpleLoggerFacade>();
+            var sut = Create(settings, downloader, logger: logger);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Apply();
+
+            //---------------Test Result -----------------------
+            logger.Received().LogInfo($"Successful download: {successfulSource}");
+            logger.Received().LogWarning($"Failed download: {failedSource} ({expectedFailureString})");
+        }
+
+        [Test]
+        public void Apply_ShouldLogWhenCacheManagerCanProvideCachedResult()
+        {
+            //---------------Set up test pack-------------------
+            var settings = Substitute.For<ISettings>();
+            var source = GetRandomHttpUrl();
+            settings.Sources.Returns(new[] { source });
+            var cacheManager = Substitute.For<IBlocklistCacheManager>();
+            var reader = Substitute.For<ITextFileReader>();
+            reader.SetData("127.0.0.1   a.b.c");
+            cacheManager.GetReaderFor(source).Returns(reader);
+            var logger = Substitute.For<ISimpleLoggerFacade>();
+            var sut = Create(settings, blocklistCacheManager:cacheManager, logger: logger);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Apply();
+
+            //---------------Test Result -----------------------
+            logger.Received().LogDebug($"Retrieved cached data for {source}");
+        }
+
+        [Test]
+        public void Apply_ShouldLogWhenCacheManagerCannotProvideCachedResult()
+        {
+            //---------------Set up test pack-------------------
+            var settings = Substitute.For<ISettings>();
+            var source = GetRandomHttpUrl();
+            settings.Sources.Returns(new[] { source });
+            var cacheManager = Substitute.For<IBlocklistCacheManager>();
+            cacheManager.GetReaderFor(source).Returns((ITextFileReader)null);
+            var logger = Substitute.For<ISimpleLoggerFacade>();
+            var sut = Create(settings, blocklistCacheManager:cacheManager, logger: logger);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Apply();
+
+            //---------------Test Result -----------------------
+            logger.Received().LogWarning($"Unable to retrieve cached data for {source}");
+        }
+
+        [Test]
+        public void Apply_WhenCannotGetCacheReaderForSource_ShouldNotInstructHostFileToMerge()
+        {
+            //---------------Set up test pack-------------------
+            var hostFile = Substitute.For<IHostFile>();
+            var hostFileFactory = CreateHostFileFactoryFor(hostFile);
+            var settings = Substitute.For<ISettings>();
+            var source = GetRandomHttpUrl();
+            settings.Sources.Returns(new[] { source });
+            var cacheManager = Substitute.For<IBlocklistCacheManager>();
+            cacheManager.GetReaderFor(source).Returns((ITextFileReader)null);
+            var logger = Substitute.For<ISimpleLoggerFacade>();
+            var sut = Create(settings, 
+                            blocklistCacheManager:cacheManager, 
+                            hostFileFactory: hostFileFactory,
+                            logger: logger);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Apply();
+
+            //---------------Test Result -----------------------
+            hostFile.DidNotReceive().Merge(Arg.Any<ITextFileReader>());
+        }
+
+        [Test]
+        public void Apply_ShouldLogWhenOverridingRedirectIp()
+        {
+            //---------------Set up test pack-------------------
+            var settings = Substitute.For<ISettings>();
+            settings.Sources.Returns(new[] { GetRandomHttpUrl() });
+            settings.RedirectIp.Returns(GetRandomIPv4Address());
+            var hostFile = Substitute.For<IHostFile>();
+            var hostFileFactory = CreateHostFileFactoryFor(hostFile);
+            var logger = Substitute.For<ISimpleLoggerFacade>();
+            var sut = Create(settings, hostFileFactory: hostFileFactory, logger: logger);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Apply();
+
+            //---------------Test Result -----------------------
+            Received.InOrder(() =>
+            {
+                hostFile.Merge(Arg.Any<ITextFileReader>());
+                logger.LogInfo($"Redirecting adserver hosts to {settings.RedirectIp}");
+                hostFile.SetRedirectIp(settings.RedirectIp);
+            });
+        }
+
+        [Test]
+        public void Apply_ShouldLogHowManyBlacklistHostsAreBeingApplied()
+        {
+            //---------------Set up test pack-------------------
+            var settings = Substitute.For<ISettings>();
+            settings.RedirectIp.Returns(GetRandomIPv4Address());
+            var blacklist = GetRandomCollection(GetRandomHostname, 3, 5);
+            settings.Blacklist.Returns(blacklist);
+            var logger = Substitute.For<ISimpleLoggerFacade>();
+            var sut = Create(settings, logger: logger);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Apply();
+
+            //---------------Test Result -----------------------
+            Received.InOrder(() =>
+            {
+                logger.LogInfo($"Redirecting adserver hosts to {settings.RedirectIp}");
+                logger.LogInfo($"Applying {blacklist.Count()} blacklist hosts");
+            });
+        }
+
+        [Test]
+        public void Apply_ShouldLogHowManyWhitelistHostsAreBeingApplied()
+        {
+            //---------------Set up test pack-------------------
+            var settings = Substitute.For<ISettings>();
+            settings.RedirectIp.Returns(GetRandomIPv4Address());
+            var whitelist = GetRandomCollection(GetRandomHostname, 3, 5);
+            settings.Whitelist.Returns(whitelist);
+            var logger = Substitute.For<ISimpleLoggerFacade>();
+            var sut = Create(settings, logger: logger);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Apply();
+
+            //---------------Test Result -----------------------
+            Received.InOrder(() =>
+            {
+                logger.LogInfo($"Redirecting adserver hosts to {settings.RedirectIp}");
+                logger.LogInfo($"Applying {whitelist.Count()} whitelist hosts");
+            });
+        }
+
+        [Test]
+        public void Apply_ShouldLogAfterPersistingHostfile()
+        {
+            //---------------Set up test pack-------------------
+            var settings = Substitute.For<ISettings>();
+            settings.HostsFile.Returns(GetRandomWindowsPath());
+            var hostFile = Substitute.For<IHostFile>();
+            var hostFileFactory = CreateHostFileFactoryFor(hostFile);
+            var logger = Substitute.For<ISimpleLoggerFacade>();
+            var sut = Create(settings, hostFileFactory: hostFileFactory, logger: logger);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Apply();
+
+            //---------------Test Result -----------------------
+            Received.InOrder(() =>
+            {
+                hostFile.Persist();
+                logger.LogInfo($"Wrote out hosts file to {settings.HostsFile}");
+            });
+        }
+
+
+
+        private static IDownloadResult CreateFailedDownloadResultFor(string url, string expectedFailureString)
+        {
+            var result = Substitute.For<IDownloadResult>();
+            result.Data.Returns((byte[]) null);
+            result.FailureException.Returns(new Exception(expectedFailureString));
+            result.Success.Returns(false);
+            result.Url.Returns(url);
+            return result;
+        }
+
+        private static IDownloadResult CreateSuccessfulDownloadResultFor(string url)
+        {
+            var result = Substitute.For<IDownloadResult>();
+            result.Data.Returns(GetRandomBytes());
+            result.FailureException.Returns((Exception) null);
+            result.Success.Returns(true);
+            result.Url.Returns(url);
+            return result;
+        }
 
 
         private ITextFileReaderFactory CreateReaderFactoryFor(string path, ITextFileReader reader)

@@ -79,9 +79,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="README.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\EasyBlock.Core\EasyBlock.Core.csproj">
       <Project>{555A5EB3-5A71-421D-B9A5-780EB2E255A3}</Project>
       <Name>EasyBlock.Core</Name>

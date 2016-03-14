@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using NSubstitute;
 using NUnit.Framework;
 using PeanutButter.TestUtils.Generic;
@@ -59,6 +60,29 @@ namespace EasyBlock.Core.Tests
             //---------------Test Result -----------------------
             Assert.AreEqual(expected, result);
         }
+
+        [Test]
+        public void GenerateFor_WhenPathIsRelative_ShouldPrependExecutingAssemblyFolderPath()
+        {
+            //---------------Set up test pack-------------------
+            var appSettings = Substitute.For<ISettings>();
+            var cacheFolder = GetRandomString(4, 6);
+            appSettings.CacheFolder.Returns(cacheFolder);
+            var asmPath = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
+            var asmFolder = Path.GetDirectoryName(asmPath);
+            var expectedFolder = Path.Combine(asmFolder, cacheFolder);
+            var sut = Create(appSettings);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var result = sut.GenerateFor(GetRandomHttpUrl());
+
+            //---------------Test Result -----------------------
+            var resultFolder = Path.GetDirectoryName(result);
+            Assert.AreEqual(expectedFolder, resultFolder);
+        }
+
 
         private ICacheFilenameGenerator Create(ISettings settings)
         {

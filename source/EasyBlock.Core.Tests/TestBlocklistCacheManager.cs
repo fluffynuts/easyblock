@@ -52,7 +52,7 @@ namespace EasyBlock.Core.Tests
             using (var tempFile = new AutoTempFile())
             {
                 cacheFilenameGenerator.GenerateFor(sourceUrl)
-                                    .Returns(tempFile.Path);
+                                        .Returns(tempFile.Path);
                 var sut = Create(cacheFilenameGenerator);
                 //---------------Assert Precondition----------------
                 CollectionAssert.IsEmpty(File.ReadAllBytes(tempFile.Path));
@@ -64,6 +64,34 @@ namespace EasyBlock.Core.Tests
                 CollectionAssert.AreEqual(expected, File.ReadAllBytes(tempFile.Path));
             }
         }
+
+        [Test]
+        public void Set_GivenSourceAndData_WhenCacheFolderDoesNotExist_ShouldCreateIt()
+        {
+            //---------------Set up test pack-------------------
+            var url = GetRandomHttpUrl();
+            var expected = GetRandomBytes();
+            var cacheFilenameGenerator = Substitute.For<ICacheFilenameGenerator>();
+            using (var tempFolder = new AutoTempFolder())
+            {
+                var nestedFolder = string.Join(Path.DirectorySeparatorChar.ToString(), GetRandomCollection<string>(2,3));
+                var cacheFileName = GetRandomFileName();
+                var cacheFilePath = Path.Combine(tempFolder.Path, nestedFolder, cacheFileName);
+                cacheFilenameGenerator.GenerateFor(url)
+                        .Returns(cacheFilePath);
+                var sut = Create(cacheFilenameGenerator);
+
+                //---------------Assert Precondition----------------
+                Assert.IsFalse(Directory.Exists(Path.GetDirectoryName(cacheFilePath)));
+
+                //---------------Execute Test ----------------------
+                sut.Set(url, expected);
+
+                //---------------Test Result -----------------------
+                CollectionAssert.AreEqual(expected, File.ReadAllBytes(cacheFilePath));
+            }
+        }
+
 
         [Test]
         public void Get_GivenSource_WhenNoExistingData_ShouldReturnNull()

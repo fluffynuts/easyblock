@@ -112,6 +112,7 @@
     <Compile Include="TestHostFileFactory.cs" />
     <Compile Include="TestHostFileLine.cs" />
     <Compile Include="TestSimpleLoggerFacade.cs" />
+    <Compile Include="TestStarterConfigGenerator.cs" />
     <Compile Include="TestTextFileReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestTextFileReaderFactory.cs" />

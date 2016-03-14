@@ -97,14 +97,4 @@ namespace EasyBlock.Core
             return Path.Combine(appFolder, "cache");
         }
     }
-
-    public static class StringExtensions
-    {
-        public static int AsInteger(this string value)
-        {
-            int result;
-            int.TryParse(value, out result);
-            return result;
-        }
-    }
 }

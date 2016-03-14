@@ -20,6 +20,9 @@ namespace EasyBlock.Core
         public void Set(string source, byte[] data)
         {
             var path = _cacheFilenameGenerator.GenerateFor(source);
+            var targetFolder = Path.GetDirectoryName(path);
+            if (!string.IsNullOrWhiteSpace(targetFolder) && !Directory.Exists(targetFolder))
+                Directory.CreateDirectory(targetFolder);
             File.WriteAllBytes(path, data);
         }
 

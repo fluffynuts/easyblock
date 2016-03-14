@@ -69,6 +69,7 @@ namespace EasyBlock.Core
             ApplyBlacklistOn(hostFile);
             ApplyWhitelistOn(hostFile);
             hostFile.Persist();
+            _logger.LogInfo($"Wrote out hosts file to {_settings.HostsFile}");
         }
 
         private void UpdateBlocklists()
@@ -79,16 +80,19 @@ namespace EasyBlock.Core
 
         private void ApplyWhitelistOn(IHostFile hostFile)
         {
-            _settings.Whitelist.ForEach(regex => hostFile.Whitelist(regex));
+            _logger.LogInfo($"Applying {_settings.Whitelist.Count()} whitelist hosts");
+            _settings.Whitelist.ForEach(hostFile.Whitelist);
         }
 
         private void ApplyBlacklistOn(IHostFile hostFile)
         {
+            _logger.LogInfo($"Applying {_settings.Blacklist.Count()} blacklist hosts");
             _settings.Blacklist.ForEach(b => hostFile.Redirect(b, _settings.RedirectIp));
         }
 
         private void OverrideRedirectWithUserPreferenceOn(IHostFile hostFile)
         {
+            _logger.LogInfo($"Redirecting adserver hosts to {_settings.RedirectIp}");
             hostFile.SetRedirectIp(_settings.RedirectIp);
         }
 
@@ -118,12 +122,19 @@ namespace EasyBlock.Core
         private void Merge(string url, IHostFile hostFile)
         {
             var cachedHosts = _blocklistCacheManager.GetReaderFor(url);
+            if (cachedHosts == null)
+            {
+                _logger.LogWarning($"Unable to retrieve cached data for {url}");
+                return;
+            }
+
+            _logger.LogDebug($"Retrieved cached data for {url}");
             hostFile.Merge(cachedHosts);
         }
 
         private void Cache(IDownloadResult[] blockLists)
         {
-            blockLists.Where(b => b.Success)
+            blockLists.Where(b => b != null && b.Success)
                 .ForEach(b => _blocklistCacheManager.Set(b.Url, b.Data));
         }
 
@@ -139,7 +150,25 @@ namespace EasyBlock.Core
                                     });
             var waitOn = tasks.Cast<Task>().ToArray();
             Task.WaitAll(waitOn);
-            return tasks.Select(t => t.Result).ToArray();
+            var results = tasks.Select(t => t.Result).ToArray();
+            LogDownloadResults(results);
+            return results;
+        }
+
+        private void LogDownloadResults(IDownloadResult[] results)
+        {
+            results.ForEach(result =>
+            {
+                if (result == null)
+                {
+                    _logger.LogWarning("null result encountered");
+                    return;
+                }
+                if (result.Success)
+                    _logger.LogInfo($"Successful download: {result.Url}");
+                else
+                    _logger.LogWarning($"Failed download: {result.Url} ({result.FailureException?.Message})");
+            });
         }
     }
 }
