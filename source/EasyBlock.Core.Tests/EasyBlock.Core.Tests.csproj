@@ -102,7 +102,6 @@
     <Compile Include="IniBuilder.cs" />
     <Compile Include="HostFileLineComparer.cs" />
     <Compile Include="SettingsBuilder.cs" />
-    <Compile Include="TestINIFactory.cs" />
     <Compile Include="TestSettings.cs" />
     <Compile Include="TestBlocklistCacheManager.cs" />
     <Compile Include="TestCacheFilenameGenerator.cs" />

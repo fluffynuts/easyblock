@@ -6,8 +6,8 @@ namespace EasyBlock.Win32Service
 {
     public class EasyBlockService: Shell
     {
-        public IWindsorContainer Container => _container;
-        private IWindsorContainer _container;
+        public IWindsorContainer WindsorContainer => _container;
+        private readonly IWindsorContainer _container;
 
         public EasyBlockService(): this(WindsorBootstrapper.Bootstrap())
         {

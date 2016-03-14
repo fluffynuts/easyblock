@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using PeanutButter.RandomGenerators;
 using PeanutButter.TestUtils.Generic;
 using static PeanutButter.RandomGenerators.RandomValueGen;
 

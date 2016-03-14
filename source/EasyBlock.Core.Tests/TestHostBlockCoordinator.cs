@@ -33,6 +33,7 @@ namespace EasyBlock.Core.Tests
         [TestCase("textFileReaderFactory", typeof(ITextFileReaderFactory))]
         [TestCase("textFileWriterFactory", typeof(ITextFileWriterFactory))]
         [TestCase("blocklistCacheManager", typeof(IBlocklistCacheManager))]
+        [TestCase("logger", typeof(ISimpleLoggerFacade))]
         public void Construct_ShouldExpectParameter_(string parameterName, Type parameterType)
         {
             //---------------Set up test pack-------------------
@@ -301,6 +302,29 @@ namespace EasyBlock.Core.Tests
             });
         }
 
+        [Test]
+        public void Apply_ShouldLogEachSourceDownload()
+        {
+            //---------------Set up test pack-------------------
+            var settings = Substitute.For<ISettings>();
+            var sources = GetRandomCollection(GetRandomHttpUrl, 2, 4);
+            settings.Sources.Returns(sources);
+            var logger = Substitute.For<ISimpleLoggerFacade>();
+            var sut = Create(settings, logger: logger);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Apply();
+
+            //---------------Test Result -----------------------
+            sources.ForEach(s =>
+            {
+                logger.Received().LogInfo($"Downloading hosts file: {s}");
+            });
+        }
+
+
 
         private ITextFileReaderFactory CreateReaderFactoryFor(string path, ITextFileReader reader)
         {
@@ -337,7 +361,8 @@ namespace EasyBlock.Core.Tests
                                             IHostFileFactory hostFileFactory = null,
                                             ITextFileReaderFactory textFileReaderFactory = null,
                                             ITextFileWriterFactory textFileWriterFactory = null,
-                                            IBlocklistCacheManager blocklistCacheManager = null)
+                                            IBlocklistCacheManager blocklistCacheManager = null,
+                                            ISimpleLoggerFacade logger = null)
         {
             return new HostBlockCoordinator(
                 settings ?? Substitute.For<ISettings>(),
@@ -345,7 +370,8 @@ namespace EasyBlock.Core.Tests
                 hostFileFactory ?? Substitute.For<IHostFileFactory>(),
                 textFileReaderFactory ?? Substitute.For<ITextFileReaderFactory>(),
                 textFileWriterFactory ?? Substitute.For<ITextFileWriterFactory>(),
-                blocklistCacheManager ?? Substitute.For<IBlocklistCacheManager>());
+                blocklistCacheManager ?? Substitute.For<IBlocklistCacheManager>(),
+                logger ?? Substitute.For<ISimpleLoggerFacade>());
         }
     }
 }

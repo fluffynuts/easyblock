@@ -26,7 +26,7 @@ namespace EasyBlock.Win32Service.Tests
             var sut = new EasyBlockService(container);
 
             //---------------Test Result -----------------------
-            Assert.AreEqual(container, sut.Container);
+            Assert.AreEqual(container, sut.WindsorContainer);
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace EasyBlock.Win32Service.Tests
                 //---------------Execute Test ----------------------
                 var resolvedIni = referenceContainer.Resolve<IINIFile>();
                 var expected = resolvedIni["settings"]["RefreshIntervalInMinutes"];
-                var result = sut.Container.Resolve<IINIFile>()["settings"]["RefreshIntervalInMinutes"];
+                var result = sut.WindsorContainer.Resolve<IINIFile>()["settings"]["RefreshIntervalInMinutes"];
 
                 //---------------Test Result -----------------------
                 Assert.AreEqual(expected, result);

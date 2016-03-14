@@ -22,13 +22,15 @@ namespace EasyBlock.Core
         private readonly ITextFileReaderFactory _textFileReaderFactory;
         private readonly ITextFileWriterFactory _textFileWriterFactory;
         private readonly IBlocklistCacheManager _blocklistCacheManager;
+        private readonly ISimpleLoggerFacade _logger;
 
         public HostBlockCoordinator(ISettings settings,
                                     IFileDownloader fileDownloader,
                                     IHostFileFactory hostFileFactory,
                                     ITextFileReaderFactory textFileReaderFactory,
                                     ITextFileWriterFactory textFileWriterFactory,
-                                    IBlocklistCacheManager blocklistCacheManager)
+                                    IBlocklistCacheManager blocklistCacheManager,
+                                    ISimpleLoggerFacade logger)
         {
             if (settings == null) throw new ArgumentNullException(nameof(settings));
             if (fileDownloader == null) throw new ArgumentNullException(nameof(fileDownloader));
@@ -36,12 +38,14 @@ namespace EasyBlock.Core
             if (textFileReaderFactory == null) throw new ArgumentNullException(nameof(textFileReaderFactory));
             if (textFileWriterFactory == null) throw new ArgumentNullException(nameof(textFileWriterFactory));
             if (blocklistCacheManager == null) throw new ArgumentNullException(nameof(blocklistCacheManager));
+            if (logger == null) throw new ArgumentNullException(nameof(logger));
             _settings = settings;
             _fileDownloader = fileDownloader;
             _hostFileFactory = hostFileFactory;
             _textFileReaderFactory = textFileReaderFactory;
             _textFileWriterFactory = textFileWriterFactory;
             _blocklistCacheManager = blocklistCacheManager;
+            _logger = logger;
         }
 
         public void Apply()
@@ -129,6 +133,7 @@ namespace EasyBlock.Core
                             .Sources
                             .Aggregate(new List<Task<IDownloadResult>>(), (accumulator, url) =>
                                     {
+                                        _logger.LogInfo($"Downloading hosts file: {url}");
                                         accumulator.Add(_fileDownloader.DownloadDataAsync(url));
                                         return accumulator;
                                     });
