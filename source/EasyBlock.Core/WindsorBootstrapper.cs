@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Castle.MicroKernel.Registration;
+﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using PeanutButter.INIFile;
 using PeanutButter.Utils.Windsor;
