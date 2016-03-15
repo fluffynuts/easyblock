@@ -56,7 +56,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.INI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.INI.1.2.10\lib\net45\PeanutButter.INI.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.INI.1.2.11\lib\net45\PeanutButter.INI.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.RandomGenerators, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -89,6 +89,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />

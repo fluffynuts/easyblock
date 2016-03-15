@@ -14,9 +14,9 @@ namespace EasyBlock.Core.Tests
 
         public SettingsBuilder()
         {
-            WithInterval(Constants.Defaults.ONE_DAY)
+            WithInterval(int.Parse(Constants.Defaults.ONE_DAY))
                 .WithHostFile(Constants.Defaults.WINDOWS_HOSTS_FILE_LOCATION)
-                .WithRedirectIp(Constants.Defaults.REDIRECT_IP)
+                .WithRedirectIp(Constants.Defaults.LOCALHOST)
                 .WithSources(RandomValueGen.GetRandomHttpUrl(), RandomValueGen.GetRandomHttpUrl());
         }
 

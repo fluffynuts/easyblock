@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using PeanutButter.INIFile;
@@ -259,6 +260,32 @@ namespace EasyBlock.Core.Tests
         }
 
         [Test]
+        public void Construct_WhenSourceHasKeyAndValue_ShouldUseCombinedResult()
+        {
+            // happens as a result of the (mis)use of the ini format:
+            // http://somehost.somedomain/route?var1=var2
+            //  will be interpreted by INIFile into:
+            //  key: http://somehost.somedomain/route?var1
+            //  value: var2
+            //---------------Set up test pack-------------------
+            var iniFile = new INIFile();
+            var start = GetRandomHttpUrl() + "?somevar";
+            var value = "somevalue";
+            var expected = start + "=" + value;
+            iniFile[Sections.SOURCES][start] = value;
+            var sut = Create(iniFile);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var result = sut.Sources.Single();
+
+            //---------------Test Result -----------------------
+            Assert.AreEqual(expected, result);
+        }
+
+
+        [Test]
         public void Construct_WhenHaveNoSourcesSection_ShouldNotThrow()
         {
             //---------------Set up test pack-------------------
@@ -290,7 +317,7 @@ namespace EasyBlock.Core.Tests
             var result = sut.RedirectIp;
 
             //---------------Test Result -----------------------
-            Assert.AreEqual(Defaults.REDIRECT_IP, result);
+            Assert.AreEqual(Defaults.LOCALHOST, result);
         }
 
         [Test]
@@ -307,7 +334,7 @@ namespace EasyBlock.Core.Tests
             var result = sut.RedirectIp;
 
             //---------------Test Result -----------------------
-            Assert.AreEqual(Defaults.REDIRECT_IP, result);
+            Assert.AreEqual(Defaults.LOCALHOST, result);
         }
 
 

@@ -38,24 +38,31 @@ namespace EasyBlock.Core
 
         private void LoadSourcesFrom(IINIFile iniFile)
         {
-            LoadKeysInto(_sources, iniFile, Sections.SOURCES);
+            LoadRawLinesInto(_sources, iniFile, Sections.SOURCES);
         }
 
         private void LoadWhitelistFrom(IINIFile iniFile)
         {
-            LoadKeysInto(_whitelist, iniFile, Sections.WHITELIST);
+            LoadRawLinesInto(_whitelist, iniFile, Sections.WHITELIST);
         }
 
         private void LoadBlacklistFrom(IINIFile iniFile)
         {
-            LoadKeysInto(_blacklist, iniFile, Sections.BLACKLIST);
+            LoadRawLinesInto(_blacklist, iniFile, Sections.BLACKLIST);
         }
 
-        private void LoadKeysInto(List<string> target, IINIFile iniFile, string section)
+        private void LoadRawLinesInto(List<string> target, IINIFile iniFile, string section)
         {
             if (!iniFile.HasSection(section))
                 return;
-            target.AddRange(iniFile[section].Keys.ToArray());
+            var lines = iniFile[section].Keys.Select(k => GetFullLine(k, iniFile[section]));
+            target.AddRange(lines);
+        }
+
+        private string GetFullLine(string key, Dictionary<string, string> section)
+        {
+            var value = section[key];
+            return value == null ? key : key + "=" + value;
         }
 
         private void LoadSettingsFrom(IINIFile iniFile)
@@ -71,8 +78,8 @@ namespace EasyBlock.Core
                 Defaults.WINDOWS_HOSTS_FILE_LOCATION
             );
             CacheFolder = getSetting(Keys.CACHE_FOLDER, DetermineDefaultCacheFolder());
-            var redirectIp = getSetting(Keys.REDIRECT_IP, Defaults.REDIRECT_IP);
-            RedirectIp = IsValidIp(redirectIp) ? redirectIp : Defaults.REDIRECT_IP;
+            var redirectIp = getSetting(Keys.REDIRECT_IP, Defaults.LOCALHOST);
+            RedirectIp = IsValidIp(redirectIp) ? redirectIp : Defaults.LOCALHOST;
         }
 
         private bool IsValidIp(string redirectIp)
