@@ -47,23 +47,23 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.INI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.INI.1.2.11\lib\net45\PeanutButter.INI.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.INI.1.2.19\lib\net45\PeanutButter.INI.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.ServiceShell, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.ServiceShell.1.2.10\lib\net45\PeanutButter.ServiceShell.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.ServiceShell.1.2.19\lib\net45\PeanutButter.ServiceShell.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.Utils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.Utils.1.2.10\lib\net45\PeanutButter.Utils.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.Utils.1.2.19\lib\net45\PeanutButter.Utils.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.Utils.Windsor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.Utils.Windsor.1.2.10\lib\net45\PeanutButter.Utils.Windsor.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.Utils.Windsor.1.2.19\lib\net45\PeanutButter.Utils.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.Win32ServiceControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.WindowsServiceManagement.1.2.10\lib\net45\PeanutButter.Win32ServiceControl.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.WindowsServiceManagement.1.2.19\lib\net45\PeanutButter.Win32ServiceControl.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

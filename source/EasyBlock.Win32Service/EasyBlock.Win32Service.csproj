@@ -50,11 +50,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.ServiceShell, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.ServiceShell.1.2.10\lib\net45\PeanutButter.ServiceShell.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.ServiceShell.1.2.19\lib\net45\PeanutButter.ServiceShell.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PeanutButter.Win32ServiceControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.WindowsServiceManagement.1.2.10\lib\net45\PeanutButter.Win32ServiceControl.dll</HintPath>
+      <HintPath>..\packages\PeanutButter.WindowsServiceManagement.1.2.19\lib\net45\PeanutButter.Win32ServiceControl.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -83,6 +83,9 @@
       <Project>{555A5EB3-5A71-421D-B9A5-780EB2E255A3}</Project>
       <Name>EasyBlock.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
