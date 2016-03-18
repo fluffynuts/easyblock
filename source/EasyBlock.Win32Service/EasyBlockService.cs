@@ -1,4 +1,5 @@
-﻿using Castle.Windsor;
+﻿using System;
+using Castle.Windsor;
 using EasyBlock.Core;
 using PeanutButter.ServiceShell;
 
@@ -39,8 +40,16 @@ namespace EasyBlock.Win32Service
         {
             base.OnStop();
             SetupLogging();
-            var coordinator = _container.Resolve<IHostBlockCoordinator>();
-            coordinator.Unapply();
+            LogInfo("Unapplying blocklists...");
+            try
+            {
+                var coordinator = _container.Resolve<IHostBlockCoordinator>();
+                coordinator.Unapply();
+            }
+            catch (Exception ex)
+            {
+                LogFatal($"Unable to Unapply blocklists: {ex.Message}");
+            }
         }
     }
 }
