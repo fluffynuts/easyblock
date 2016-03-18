@@ -20,6 +20,8 @@ namespace EasyBlock.Core
 
         public void CreateConfigIfNotFound()
         {
+            if (File.Exists(IniFilePath))
+                return;
             var iniFile = new INIFile(IniFilePath);
             SetDefaultSettingsOn(iniFile);
             SetDefaultSourcesOn(iniFile);

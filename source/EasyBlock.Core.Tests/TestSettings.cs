@@ -78,7 +78,7 @@ namespace EasyBlock.Core.Tests
         public void Construct_WhenNoHostFileSetting_ShouldUseWindowsHostFileLocation()
         {
             //---------------Set up test pack-------------------
-            var expected = "%WINDIR%\\system32\\drivers\\etc\\hosts";
+            var expected = Environment.ExpandEnvironmentVariables("%WINDIR%\\system32\\drivers\\etc\\hosts");
             var iniFile = new INIFile();
 
             //---------------Assert Precondition----------------

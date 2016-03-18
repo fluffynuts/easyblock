@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Castle.Components.DictionaryAdapter;
 using PeanutButter.INIFile;
 using static EasyBlock.Core.Constants;
@@ -73,10 +72,10 @@ namespace EasyBlock.Core
                                             Keys.REFRESH_INTERVAL_IN_MINUTES,
                                             Defaults.ONE_DAY.ToString()
                                         ).AsInteger();
-            HostsFile = getSetting(
+            HostsFile = Environment.ExpandEnvironmentVariables(getSetting(
                 Keys.HOSTS_FILE,
                 Defaults.WINDOWS_HOSTS_FILE_LOCATION
-            );
+            ));
             CacheFolder = getSetting(Keys.CACHE_FOLDER, DetermineDefaultCacheFolder());
             var redirectIp = getSetting(Keys.REDIRECT_IP, Defaults.LOCALHOST);
             RedirectIp = IsValidIp(redirectIp) ? redirectIp : Defaults.LOCALHOST;

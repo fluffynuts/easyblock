@@ -2,13 +2,13 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Web;
 using NUnit.Framework;
 using PeanutButter.INIFile;
 using PeanutButter.Utils;
 using Sections = EasyBlock.Core.Constants.Sections;
 using Keys = EasyBlock.Core.Constants.Keys;
 using Defaults = EasyBlock.Core.Constants.Defaults;
+using static PeanutButter.RandomGenerators.RandomValueGen;
 
 namespace EasyBlock.Core.Tests
 {
@@ -69,6 +69,25 @@ namespace EasyBlock.Core.Tests
             var allUrls = ini[Sections.SOURCES].Keys.Select(k => ini[Sections.SOURCES][k] == null ? k : k + "=" + ini[Sections.SOURCES][k]);
             Assert.IsTrue(allUrls.Contains(url));
         }
+
+        [Test]
+        public void CreateConfigIfNotFound_WhenConfigExists_ShouldNotAlterIt()
+        {
+            //---------------Set up test pack-------------------
+            var sut = Create();
+            var expected = GetRandomString(10, 20);
+            File.WriteAllText(sut.IniFilePath, expected);
+
+            //---------------Assert Precondition----------------
+            Assert.IsTrue(File.Exists(sut.IniFilePath));
+
+            //---------------Execute Test ----------------------
+            sut.CreateConfigIfNotFound();
+
+            //---------------Test Result -----------------------
+            Assert.AreEqual(expected, File.ReadAllText(sut.IniFilePath));
+        }
+
 
 
         private StarterConfigGenerator Create()
