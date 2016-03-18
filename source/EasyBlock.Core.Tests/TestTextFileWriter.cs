@@ -1,10 +1,10 @@
 using System;
 using System.IO;
-using System.Linq;
 using NUnit.Framework;
 using PeanutButter.RandomGenerators;
 using PeanutButter.TestUtils.Generic;
 using PeanutButter.Utils;
+using static PeanutButter.RandomGenerators.RandomValueGen;
 
 namespace EasyBlock.Core.Tests
 {
@@ -124,6 +124,27 @@ namespace EasyBlock.Core.Tests
                 //---------------Test Result -----------------------
             }
         }
+
+        [Test]
+        [Ignore("WHA")]
+        public void Concurrency()
+        {
+            //---------------Set up test pack-------------------
+            var data = GetRandomString(10, 20);
+            using (var tempFile = new AutoTempFile(data.AsBytes()))
+            {
+                //---------------Assert Precondition----------------
+
+                //---------------Execute Test ----------------------
+                var writer1 = Create(tempFile.Path);
+                var writer2 = Create(tempFile.Path);
+                writer1.AppendLine(data);
+                writer2.AppendLine(data);
+
+                //---------------Test Result -----------------------
+            }
+        }
+
 
         private ITextFileWriter Create(string path)
         {

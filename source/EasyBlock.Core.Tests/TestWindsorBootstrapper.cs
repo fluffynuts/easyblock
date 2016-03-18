@@ -71,7 +71,6 @@ namespace EasyBlock.Core.Tests
 
                 //---------------Test Result -----------------------
                 Assert.AreEqual(expected, result);
-
             }
         }
 
@@ -94,6 +93,25 @@ namespace EasyBlock.Core.Tests
             Assert.IsInstanceOf<HostBlockCoordinator>(result2);
             Assert.AreEqual(result1, result2);
         }
+
+        [Test]
+        public void  Container_ShouldResolveSingleton_SimpleLoggerFacade()
+        {
+            //---------------Set up test pack-------------------
+            var container = WindsorBootstrapper.Bootstrap();
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var result1 = container.Resolve<ISimpleLoggerFacade>();
+            var result2 = container.Resolve<ISimpleLoggerFacade>();
+
+            //---------------Test Result -----------------------
+            Assert.IsInstanceOf<SimpleLoggerFacade>(result1);
+            Assert.IsInstanceOf<SimpleLoggerFacade>(result2);
+            Assert.AreEqual(result1, result2);
+        }
+
 
 
 

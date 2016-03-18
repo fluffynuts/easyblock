@@ -14,6 +14,7 @@ namespace EasyBlock.Core
                                         .UsingFactoryMethod(LoadIniFromApplicationFolder)
                                         .LifestyleTransient());
             container.RegisterSingleton<IHostBlockCoordinator, HostBlockCoordinator>();
+            container.RegisterSingleton<ISimpleLoggerFacade, SimpleLoggerFacade>();
             container.RegisterAllOneToOneResolutionsAsTransientFrom(typeof(WindsorBootstrapper).Assembly);
             return container;
         }

@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using PeanutButter.RandomGenerators;
 using PeanutButter.TestUtils.Generic;
 using PeanutButter.Utils;
+using static PeanutButter.RandomGenerators.RandomValueGen;
 
 namespace EasyBlock.Core.Tests
 {
@@ -98,9 +97,9 @@ namespace EasyBlock.Core.Tests
                 var result3 = sut.ReadLine();
 
                 //---------------Test Result -----------------------
-                Assert.AreEqual(result1, lines.First());
-                Assert.AreEqual(result2, lines.Skip(1).First());
-                Assert.AreEqual(result3, lines.Skip(2).First());
+                Assert.AreEqual(lines.First(), result1);
+                Assert.AreEqual(lines.Skip(1).First(), result2);
+                Assert.AreEqual(lines.Skip(2).First(), result3);
 
             }
         }
@@ -145,6 +144,26 @@ namespace EasyBlock.Core.Tests
                 Assert.IsNull(result);
             }
         }
+
+        [Test]
+        public void Readers_ShouldNotBlockEachOther()
+        {
+            //---------------Set up test pack-------------------
+            var data = GetRandomString(10, 20);
+            using (var tempFile = new AutoTempFile(data.AsBytes()))
+            {
+                //---------------Assert Precondition----------------
+
+                //---------------Execute Test ----------------------
+                var reader1 = Create(tempFile.Path);
+                var reader2 = Create(tempFile.Path);
+
+                //---------------Test Result -----------------------
+                Assert.AreEqual(data, reader1.ReadLine());
+                Assert.AreEqual(data, reader2.ReadLine());
+            }
+        }
+
 
 
         private ITextFileReader Create(string fileName)

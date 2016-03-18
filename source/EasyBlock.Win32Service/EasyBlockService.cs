@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Castle.Windsor;
 using EasyBlock.Core;
 using PeanutButter.ServiceShell;
