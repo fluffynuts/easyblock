@@ -22,6 +22,7 @@ namespace EasyBlock.Core
         public IEnumerable<IHostFileLine> Lines => _lines;
         private readonly List<IHostFileLine> _lines = new List<IHostFileLine>();
         private readonly ITextFileWriter _writer;
+        private readonly HashSet<string> _knownHosts = new HashSet<string>(); 
 
         public HostFile(ITextFileReader reader, ITextFileWriter writer)
         {
@@ -133,13 +134,19 @@ namespace EasyBlock.Core
             if ((hostFileLine.IsComment && skipIfComment) ||
                 (!isPrimary && AlreadyHaveLineForHostOf(hostFileLine)))
                 return;
+            _knownHosts.Add(hostFileLine.HostName.ToLowerInvariant());
             _lines.Add(hostFileLine);
         }
 
         private bool AlreadyHaveLineForHostOf(HostFileLine hostFileLine)
         {
-            return !hostFileLine.IsComment &&
-                    _lines.Any(l => l.HostName.ToLower() == hostFileLine.HostName.ToLower());
+            if (hostFileLine.IsComment)
+                return false;
+            var lowerHost = hostFileLine.HostName.ToLowerInvariant();
+            if (_knownHosts.Contains(lowerHost))
+                return true;
+            _knownHosts.Add(lowerHost);
+            return false;
         }
     }
 }
