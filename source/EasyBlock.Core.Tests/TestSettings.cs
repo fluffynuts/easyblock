@@ -337,6 +337,40 @@ namespace EasyBlock.Core.Tests
             Assert.AreEqual(Defaults.LOCALHOST, result);
         }
 
+        [Test]
+        public void Construct_WhenHaveInvalidRedirectIp2_ShouldSetTo_127_0_0_1()
+        {
+            //---------------Set up test pack-------------------
+            var iniFile = new INIFile();
+            iniFile["settings"]["RedirectIp"] = "127.0.0.256";
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var sut = Create(iniFile);
+            var result = sut.RedirectIp;
+
+            //---------------Test Result -----------------------
+            Assert.AreEqual(Defaults.LOCALHOST, result);
+        }
+
+        [Test]
+        public void Construct_WhenHaveInvalidRedirectIp3_ShouldSetTo_127_0_0_1()
+        {
+            //---------------Set up test pack-------------------
+            var iniFile = new INIFile();
+            iniFile["settings"]["RedirectIp"] = "127.0.0.256a";
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var sut = Create(iniFile);
+            var result = sut.RedirectIp;
+
+            //---------------Test Result -----------------------
+            Assert.AreEqual(Defaults.LOCALHOST, result);
+        }
+
 
 
         private ISettings Create(IINIFile iniFile)

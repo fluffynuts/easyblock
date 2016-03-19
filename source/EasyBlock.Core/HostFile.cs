@@ -6,7 +6,7 @@ using PeanutButter.Utils;
 
 namespace EasyBlock.Core
 {
-    public interface IHostFile: IDisposable
+    public interface IHostFile
     {
         IEnumerable<IHostFileLine> Lines { get; }
         void Merge(ITextFileReader reader);
@@ -141,17 +141,11 @@ namespace EasyBlock.Core
 
         private bool AlreadyHaveLineForHostOf(HostFileLine hostFileLine)
         {
-            if (hostFileLine.IsComment)
-                return false;
-            var lowerHost = hostFileLine.HostName.ToLowerInvariant();
+            var lowerHost = hostFileLine?.HostName?.ToLowerInvariant();
             if (_knownHosts.Contains(lowerHost))
                 return true;
             _knownHosts.Add(lowerHost);
             return false;
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

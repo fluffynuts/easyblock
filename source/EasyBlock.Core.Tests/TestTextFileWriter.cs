@@ -5,6 +5,7 @@ using PeanutButter.RandomGenerators;
 using PeanutButter.TestUtils.Generic;
 using PeanutButter.Utils;
 using static PeanutButter.RandomGenerators.RandomValueGen;
+// ReSharper disable PossibleMultipleEnumeration
 
 namespace EasyBlock.Core.Tests
 {
@@ -26,21 +27,6 @@ namespace EasyBlock.Core.Tests
         }
 
         [Test]
-        public void ITextFileWriter_ShouldImplement_IDisposable()
-        {
-            //---------------Set up test pack-------------------
-            var sut = typeof(ITextFileWriter);
-
-            //---------------Assert Precondition----------------
-
-            //---------------Execute Test ----------------------
-            sut.ShouldImplement<IDisposable>();
-
-            //---------------Test Result -----------------------
-
-        }
-
-        [Test]
         public void AppendLine_ShouldNotYetChangeTheFile()
         {
             //---------------Set up test pack-------------------
@@ -53,7 +39,7 @@ namespace EasyBlock.Core.Tests
                 CollectionAssert.IsEmpty(File.ReadAllBytes(tempFile.Path));
 
                 //---------------Execute Test ----------------------
-                sut.AppendLine(RandomValueGen.GetRandomString());
+                sut.AppendLine(GetRandomString());
 
                 //---------------Test Result -----------------------
                 CollectionAssert.IsEmpty(File.ReadAllBytes(tempFile.Path));
@@ -61,19 +47,18 @@ namespace EasyBlock.Core.Tests
         }
 
         [Test]
-        public void Dispose_ShouldFlushLinesToFile()
+        public void Persist_ShouldFlushLinesToFile()
         {
             //---------------Set up test pack-------------------
             using (var tempFile = new AutoTempFile())
             {
-                var lines = RandomValueGen.GetRandomCollection<string>(3,3);
+                var lines = GetRandomCollection<string>(3,3);
                 //---------------Assert Precondition----------------
 
                 //---------------Execute Test ----------------------
-                using (var writer = Create(tempFile.Path))
-                {
-                    lines.ForEach(writer.AppendLine);
-                }
+                var writer = Create(tempFile.Path);
+                lines.ForEach(writer.AppendLine);
+                writer.Persist();
 
                 //---------------Test Result -----------------------
                 var inFile = File.ReadAllText(tempFile.Path).Split(new[] { Environment.NewLine }, StringSplitOptions.None);
@@ -82,11 +67,11 @@ namespace EasyBlock.Core.Tests
         }
 
         [Test]
-        public void AppendLine_then_Dispose_WhenDestinationFolderDoesntExist_ShouldCreateIt()
+        public void AppendLine_then_Persist_WhenDestinationFolderDoesntExist_ShouldCreateIt()
         {
             //---------------Set up test pack-------------------
-            var baseFolder = Path.Combine(Path.GetTempPath(), RandomValueGen.GetRandomAlphaNumericString(3));
-            var lines = RandomValueGen.GetRandomCollection<string>(3);
+            var baseFolder = Path.Combine(Path.GetTempPath(), GetRandomAlphaNumericString(3));
+            var lines = GetRandomCollection<string>(3);
             using (var tempFile = new AutoTempFile(baseFolder, string.Empty))
             {
                 File.Delete(tempFile.Path);
@@ -95,11 +80,11 @@ namespace EasyBlock.Core.Tests
                 Assert.IsFalse(Directory.Exists(baseFolder));
 
                 //---------------Execute Test ----------------------
-                using (var sut = Create(tempFile.Path))
-                {
-                    Assert.IsFalse(File.Exists(tempFile.Path));
-                    lines.ForEach(sut.AppendLine);
-                }
+                var sut = Create(tempFile.Path);
+                Assert.IsFalse(File.Exists(tempFile.Path));
+                lines.ForEach(sut.AppendLine);
+                sut.Persist();
+
                 //---------------Test Result -----------------------
                 Assert.IsTrue(File.Exists(tempFile.Path));
                 var inFile = tempFile.StringData.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
@@ -124,27 +109,6 @@ namespace EasyBlock.Core.Tests
                 //---------------Test Result -----------------------
             }
         }
-
-        [Test]
-        [Ignore("WHA")]
-        public void Concurrency()
-        {
-            //---------------Set up test pack-------------------
-            var data = GetRandomString(10, 20);
-            using (var tempFile = new AutoTempFile(data.AsBytes()))
-            {
-                //---------------Assert Precondition----------------
-
-                //---------------Execute Test ----------------------
-                var writer1 = Create(tempFile.Path);
-                var writer2 = Create(tempFile.Path);
-                writer1.AppendLine(data);
-                writer2.AppendLine(data);
-
-                //---------------Test Result -----------------------
-            }
-        }
-
 
         private ITextFileWriter Create(string path)
         {

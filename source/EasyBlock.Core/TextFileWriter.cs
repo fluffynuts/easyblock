@@ -21,11 +21,6 @@ namespace EasyBlock.Core
             _lines.Add(line);
         }
 
-        public void Dispose()
-        {
-            Persist();
-        }
-
         public void Persist()
         {
             using (var tempFile = new AutoTempFile())

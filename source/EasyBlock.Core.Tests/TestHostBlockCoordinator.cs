@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
-using PeanutButter.INIFile;
 using PeanutButter.TestUtils.Generic;
 using PeanutButter.Utils;
 using static PeanutButter.RandomGenerators.RandomValueGen;
+// ReSharper disable PossibleMultipleEnumeration
 
 namespace EasyBlock.Core.Tests
 {
@@ -198,7 +197,6 @@ namespace EasyBlock.Core.Tests
                 hostFile.SetRedirectIp(settings.RedirectIp);
 
                 hostFile.Persist();
-
             });
         }
 
@@ -206,7 +204,7 @@ namespace EasyBlock.Core.Tests
         public void Apply_ShouldAddUserBlacklistItems()
         {
             //---------------Set up test pack-------------------
-            var expected = GetRandomCollection<string>(GetRandomHostname, 2, 5);
+            var expected = GetRandomCollection(GetRandomHostname, 2, 5);
             var settings = SettingsBuilder.Create()
                                 .WithRedirectIp(GetRandomIPv4Address())
                                 .WithBlacklist(expected.ToArray())
@@ -233,8 +231,8 @@ namespace EasyBlock.Core.Tests
         public void Apply_ShouldApplyUserWhitelistItems()
         {
             //---------------Set up test pack-------------------
-            var blacklist = GetRandomCollection<string>(GetRandomHostname, 2, 5);
-            var whitelist = GetRandomCollection<string>(GetRandomHostname, 2, 5);
+            var blacklist = GetRandomCollection(GetRandomHostname, 2, 5);
+            var whitelist = GetRandomCollection(GetRandomHostname, 2, 5);
             var settings = SettingsBuilder.Create()
                                 .WithRedirectIp(GetRandomIPv4Address())
                                 .WithWhitelist(whitelist.ToArray())
@@ -327,14 +325,15 @@ namespace EasyBlock.Core.Tests
         }
 
         [Test]
-        public void Apply_ShouldLogSuccessfulAndFailedDownloadStates()
+        public void Apply_ShouldLogSuccessfulAndFailedAndNullDownloadStates()
         {
             //---------------Set up test pack-------------------
             var settings = Substitute.For<ISettings>();
-            var sources = GetRandomCollection(GetRandomHttpUrl, 2, 2);
+            var sources = GetRandomCollection(GetRandomHttpUrl, 3, 3);
             settings.Sources.Returns(sources);
             var downloader = Substitute.For<IFileDownloader>();
             var successfulSource = sources.First();
+            var nullSource = sources.Skip(1).First();
             var failedSource = sources.Last();
             var expectedFailureString = GetRandomString();
             downloader.DownloadDataAsync(successfulSource).Returns(ci =>
@@ -345,6 +344,10 @@ namespace EasyBlock.Core.Tests
             {
                 return Task.Run(() => CreateFailedDownloadResultFor(failedSource, expectedFailureString));
             });
+            downloader.DownloadDataAsync(nullSource).Returns(ci =>
+            {
+                return Task.Run(() => (IDownloadResult)null);
+            });
             var logger = Substitute.For<ISimpleLoggerFacade>();
             var sut = Create(settings, downloader, logger: logger);
 
@@ -354,6 +357,7 @@ namespace EasyBlock.Core.Tests
             sut.Apply();
 
             //---------------Test Result -----------------------
+            logger.Received().LogWarning("null result encountered");
             logger.Received().LogInfo($"Successful download: {successfulSource}");
             logger.Received().LogWarning($"Failed download: {failedSource} ({expectedFailureString})");
         }
@@ -508,7 +512,17 @@ namespace EasyBlock.Core.Tests
             //---------------Set up test pack-------------------
             var settings = Substitute.For<ISettings>();
             settings.HostsFile.Returns(GetRandomWindowsPath());
+            var source = GetRandomHttpUrl();
+            settings.Sources.Returns(new[] { source });
             var hostFile = Substitute.For<IHostFile>();
+            var lines = new[]
+            {
+                new HostFileLine("# this is a comment", true),
+                new HostFileLine("127.0.0.1  a.b.c", false),
+                new HostFileLine("127.0.0.1  a.b.d", false)
+            };
+            hostFile.Lines.Returns(lines);
+            
             var hostFileFactory = CreateHostFileFactoryFor(hostFile);
             var logger = Substitute.For<ISimpleLoggerFacade>();
             var sut = Create(settings, hostFileFactory: hostFileFactory, logger: logger);
@@ -523,7 +537,7 @@ namespace EasyBlock.Core.Tests
             {
                 hostFile.Persist();
                 logger.LogInfo($"Wrote out hosts file to {settings.HostsFile}");
-                logger.LogInfo($" -> installed {hostFile.Lines.Count(l => !l.IsPrimary && !l.IsComment)} blocked hosts");
+                logger.LogInfo($" -> installed 2 blocked hosts");
             });
         }
 

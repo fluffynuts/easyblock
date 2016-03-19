@@ -45,28 +45,5 @@ namespace EasyBlock.Core
             }
         }
 
-        public override bool Equals(object obj)
-        {
-            var x = obj as HostFileLine;
-            if (x == null) return false;
-            return x.IsComment == IsComment &&
-                    x.Data == Data &&
-                    x.HostName == HostName &&
-                    x.IPAddress == IPAddress;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                // ReSharper disable NonReadonlyMemberInGetHashCode
-                var hashCode = Data?.GetHashCode() ?? 0;
-                hashCode = (hashCode*397) ^ IsComment.GetHashCode();
-                hashCode = (hashCode*397) ^ (IPAddress?.GetHashCode() ?? 0);
-                hashCode = (hashCode*397) ^ (HostName?.GetHashCode() ?? 0);
-                return hashCode;
-                // ReSharper restore NonReadonlyMemberInGetHashCode
-            }
-        }
     }
 }

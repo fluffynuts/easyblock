@@ -39,6 +39,21 @@ namespace EasyBlock.Core.Tests
             //---------------Test Result -----------------------
         }
 
+        [Test]
+        public void GenerateFor_GivenNull_ShouldReturnNull()
+        {
+            //---------------Set up test pack-------------------
+            var sut = Create(Substitute.For<ISettings>());
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            var result = sut.GenerateFor(null);
+
+            //---------------Test Result -----------------------
+            Assert.IsNull(result);
+        }
+
 
         [Test]
         public void GenerateFor_ShouldReturnPathUnderConfiguredCachePath()

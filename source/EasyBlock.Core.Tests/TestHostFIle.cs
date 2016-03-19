@@ -56,13 +56,16 @@ namespace EasyBlock.Core.Tests
         }
 
         [Test]
-        public void Construct_WhenNoPriorMergedLines_ShouldLoadLinesFromReaderAsWellAsMergedLines()
+        public void Construct_WhenHavePriorMergedLines_ShouldLoadLinesFromReaderAsWellAsMergedLines()
         {
             //---------------Set up test pack-------------------
             var reader = Substitute.For<ITextFileReader>();
             var mergedIp = GetRandomIPv4Address();
             var mergedHost = GetRandomHostname();
-            reader.SetData(_startData.And(Constants.MERGE_MARKER).And($"{mergedIp}\t{mergedHost}"));
+            reader.SetData(_startData
+                            .And(Constants.MERGE_MARKER)
+                            .And("")
+                            .And($"{mergedIp}\t{mergedHost}"));
 
             //---------------Assert Precondition----------------
 
@@ -454,37 +457,6 @@ namespace EasyBlock.Core.Tests
             writer.DidNotReceive().AppendLine(Arg.Is<string>(s => s.Contains(unexpectedIp) && s.Contains(unexpectedHost)));
             writer.DidNotReceive().AppendLine(Arg.Is<string>(s => s == Constants.MERGE_MARKER));
         }
-
-        [Test]
-        public void Type_ShouldImplement_IDisposable()
-        {
-            //---------------Set up test pack-------------------
-            var sut = typeof(IHostFile);
-
-            //---------------Assert Precondition----------------
-
-            //---------------Execute Test ----------------------
-            sut.ShouldImplement<IDisposable>();
-
-            //---------------Test Result -----------------------
-        }
-
-
-        [Test]
-        [Ignore("WIP: Readers and writers need to be IDisposable")]
-        public void Dispose_ShouldDisposeReadersAndWriters()
-        {
-            //---------------Set up test pack-------------------
-
-            //---------------Assert Precondition----------------
-
-            //---------------Execute Test ----------------------
-
-            //---------------Test Result -----------------------
-            Assert.Fail("Test Not Yet Implemented");
-        }
-
-
 
 
         private IHostFile Create(ITextFileReader reader = null,

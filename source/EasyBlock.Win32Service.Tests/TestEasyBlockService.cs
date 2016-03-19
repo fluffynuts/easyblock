@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Castle.Windsor;
 using EasyBlock.Core;
 using NSubstitute;
 using NUnit.Framework;
 using PeanutButter.INIFile;
 using PeanutButter.RandomGenerators;
+using PeanutButter.ServiceShell;
 using PeanutButter.Utils;
 using static PeanutButter.RandomGenerators.RandomValueGen;
 
@@ -228,13 +232,86 @@ namespace EasyBlock.Win32Service.Tests
             {
                 container.Resolve<ISimpleLoggerFacade>();
                 logFacade.SetLogger(sut);
+                logFacade.LogInfo("Unapplying blocklists...");
                 container.Resolve<IHostBlockCoordinator>();
                 coordinator.Unapply();
             });
         }
 
 
+        [Test]
+        public void Stop_WhenExceptionIsThrown_ShouldLogIt()
+        {
+            //---------------Set up test pack-------------------
+            var container = Substitute.For<IWindsorContainer>();
+            var coordinator = Substitute.For<IHostBlockCoordinator>();
+            var logFacade = Substitute.For<ISimpleLoggerFacade>();
+            container.Resolve<ISimpleLoggerFacade>().Returns(logFacade);
+            container.Resolve<IHostBlockCoordinator>().Returns(coordinator);
+            var expected = GetRandomString();
+            coordinator.When(c => c.Unapply())
+                .Do(ci => { throw new Exception(expected); });
+            var sut = Create(container);
 
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Stop();
+
+            //---------------Test Result -----------------------
+            Received.InOrder(() =>
+            {
+                container.Resolve<ISimpleLoggerFacade>();
+                logFacade.SetLogger(sut);
+                logFacade.LogInfo("Unapplying blocklists...");
+                container.Resolve<IHostBlockCoordinator>();
+                coordinator.Unapply();
+                logFacade.LogFatal($"Unable to Unapply blocklists: {expected}");
+            });
+        }
+
+        [Test]
+        public void Stop_ShouldCallBaseOnStop()
+        {
+            
+            //---------------Set up test pack-------------------
+            var container = Substitute.For<IWindsorContainer>();
+            var sut = CreateWithOverriddenLog(container);
+            var expected = $"{sut.DisplayName} :: Stopping";
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut.Stop();
+
+            //---------------Test Result -----------------------
+            CollectionAssert.Contains(sut.LogCalls, expected);
+
+        }
+
+
+        private EasyBlockService_OVERRIDES_Log CreateWithOverriddenLog(IWindsorContainer container)
+        {
+            return new EasyBlockService_OVERRIDES_Log(container);
+        }
+
+        private class EasyBlockService_OVERRIDES_Log: EasyBlockService
+        {
+            public EasyBlockService_OVERRIDES_Log(IWindsorContainer container): base(container)
+            {
+            }
+            public List<string> LogCalls { get; private set; } = new List<string>();
+            public override void Log(string status)
+            {
+                var stackTrace = new StackTrace();
+                var frames = stackTrace.GetFrames();
+                var caller = frames.Skip(1).First();
+                var callerMethod = caller.GetMethod();
+                var callerType = callerMethod.DeclaringType;
+                Assert.AreEqual(typeof(Shell), callerType);
+                LogCalls.Add(status);
+            }
+        }
 
         private EasyBlockService_EXPOSES_Internals CreateWithRunOnce(IWindsorContainer container = null)
         {

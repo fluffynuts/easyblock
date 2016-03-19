@@ -28,7 +28,7 @@ namespace EasyBlock.Core.Tests
 
 
         [Test]
-        public void IDisposableReader_ShouldImplement_IDisposable()
+        public void ITextfileReader_ShouldImplement_IDisposable()
         {
             //---------------Set up test pack-------------------
             var sut = typeof(ITextFileReader);
@@ -143,6 +143,24 @@ namespace EasyBlock.Core.Tests
                 Assert.IsNull(result);
             }
         }
+
+        [Test]
+        public void Dispose_WhenCalledTwice_ShouldNotBarf()
+        {
+            //---------------Set up test pack-------------------
+            using (var tempFile = new AutoTempFile())
+            {
+                var sut = Create(tempFile.Path);
+                sut.Dispose();
+                //---------------Assert Precondition----------------
+
+                //---------------Execute Test ----------------------
+                Assert.DoesNotThrow(() => sut.Dispose());
+
+                //---------------Test Result -----------------------
+            }
+        }
+
 
         [Test]
         public void Readers_ShouldNotBlockEachOther()

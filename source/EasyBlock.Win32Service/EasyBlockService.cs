@@ -31,25 +31,29 @@ namespace EasyBlock.Win32Service
             coordinator.Apply();
         }
 
-        private void SetupLogging()
+        private ISimpleLoggerFacade SetupLogging()
         {
             var loggerFacade = _container.Resolve<ISimpleLoggerFacade>();
             loggerFacade.SetLogger(this);
+            return loggerFacade;
         }
 
         protected override void OnStop()
         {
-            base.OnStop();
-            SetupLogging();
-            LogInfo("Unapplying blocklists...");
+            var logger = SetupLogging();
             try
             {
+                logger.LogInfo("Unapplying blocklists...");
                 var coordinator = _container.Resolve<IHostBlockCoordinator>();
                 coordinator.Unapply();
             }
             catch (Exception ex)
             {
-                LogFatal($"Unable to Unapply blocklists: {ex.Message}");
+                logger.LogFatal($"Unable to Unapply blocklists: {ex.Message}");
+            }
+            finally
+            {
+                base.OnStop();
             }
         }
     }

@@ -2,7 +2,7 @@
 
 namespace EasyBlock.Core
 {
-    public interface ITextFileWriter: IDisposable
+    public interface ITextFileWriter
     {
         void AppendLine(string line);
         void Persist();
