@@ -7,7 +7,7 @@ redirections for known ad servers. It's inspired heavily by AdAway for Android
 (http://adaway.org) because of the difference in user experience that AdAway made on
 my phone, though I haven't actually looked at how AdAway achieves it's goal.
 
-Why?
+##Why?
 
 I don't have a problem with advertising on the internet. I do have a problem with how
 advertisers abuse the space and users on the internet. Most of these problems aren't
