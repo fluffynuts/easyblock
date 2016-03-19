@@ -116,6 +116,7 @@ namespace EasyBlock.Core
                     else
                         AddPrimaryLine(line);
                 });
+            reader.Dispose();
         }
 
         private void AddMergeLine(string line)

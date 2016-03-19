@@ -523,6 +523,7 @@ namespace EasyBlock.Core.Tests
             {
                 hostFile.Persist();
                 logger.LogInfo($"Wrote out hosts file to {settings.HostsFile}");
+                logger.LogInfo($" -> installed {hostFile.Lines.Count(l => !l.IsPrimary && !l.IsComment)} blocked hosts");
             });
         }
 

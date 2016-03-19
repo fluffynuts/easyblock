@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using PeanutButter.INIFile;
 using PeanutButter.Utils;
 
 namespace EasyBlock.Core
@@ -70,6 +68,7 @@ namespace EasyBlock.Core
             ApplyWhitelistOn(hostFile);
             hostFile.Persist();
             _logger.LogInfo($"Wrote out hosts file to {_settings.HostsFile}");
+            _logger.LogInfo($" -> installed {hostFile.Lines.Count(l => !l.IsPrimary && !l.IsComment)} blocked hosts");
         }
 
         private void UpdateBlocklists()

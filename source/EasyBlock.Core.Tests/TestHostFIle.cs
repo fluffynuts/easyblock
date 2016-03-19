@@ -51,6 +51,7 @@ namespace EasyBlock.Core.Tests
             Assert.AreEqual("4.4.4.4", line.IPAddress);
             Assert.AreEqual("google.stuff.com", line.HostName);
             Assert.IsTrue(sut.Lines.All(l => l.IsPrimary));
+            reader.Received().Dispose();
 
         }
 
