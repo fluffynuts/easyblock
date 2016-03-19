@@ -100,7 +100,6 @@
   <ItemGroup>
     <Compile Include="CollectionOfHostLinesExtensions.cs" />
     <Compile Include="FileDownloaderExtensions.cs" />
-    <Compile Include="IniBuilder.cs" />
     <Compile Include="HostFileLineComparer.cs" />
     <Compile Include="SettingsBuilder.cs" />
     <Compile Include="TestDownloadResult.cs" />

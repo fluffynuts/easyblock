@@ -11,11 +11,6 @@ namespace EasyBlock.Core.Tests
             SetDataActual(reader, lines);
         }
 
-        public static void SetData(this ITextFileReader reader, IEnumerable<string> lines)
-        {
-            SetDataActual(reader, lines);
-        }
-
         private static void SetDataActual(ITextFileReader reader, IEnumerable<string> lines)
         {
             var queue = new Queue<string>(lines);

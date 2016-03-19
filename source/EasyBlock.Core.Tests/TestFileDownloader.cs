@@ -22,7 +22,7 @@ namespace EasyBlock.Core.Tests
                 server.AddFileHandler((processor, stream) =>
                 {
                     if (processor.Path != "/" + relativeUrl)
-                        throw new Exception($"Unexpected request {processor.Path}");
+                        throw new Exception($"Unexpected request {processor.Path}");    // test should fail if incorrect url is used
                     return expected;
                 });
                 var sut = Create();
