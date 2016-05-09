@@ -26,9 +26,16 @@ namespace EasyBlock.Win32Service
 
         protected override void RunOnce()
         {
-            SetupLogging();
+            var logger = SetupLogging();
             var coordinator = _container.Resolve<IHostBlockCoordinator>();
-            coordinator.Apply();
+            try
+            {
+                coordinator.Apply();
+            }
+            catch (Exception ex)
+            {
+                logger.LogFatal($"Exception whilst applying block lists: {ex.Message}\n{ex.StackTrace}");
+            }
         }
 
         private ISimpleLoggerFacade SetupLogging()

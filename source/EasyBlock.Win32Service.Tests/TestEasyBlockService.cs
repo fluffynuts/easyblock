@@ -175,6 +175,30 @@ namespace EasyBlock.Win32Service.Tests
         }
 
         [Test]
+        public void RunOnce_WhenCoordinatorThrows_ShouldLog()
+        {
+            //---------------Set up test pack-------------------
+            var container = Substitute.For<IWindsorContainer>();
+            var simpleLoggerFacade = Substitute.For<ISimpleLoggerFacade>();
+            var coordinator = Substitute.For<IHostBlockCoordinator>();
+            var expected = GetRandomString();
+            coordinator.When(c => c.Apply())
+                .Do(ci => { throw new Exception(expected); });
+            container.Resolve<IHostBlockCoordinator>().Returns(coordinator);
+            container.Resolve<ISimpleLoggerFacade>().Returns(simpleLoggerFacade);
+            var sut = CreateWithRunOnce(container);
+
+            //---------------Assert Precondition----------------
+
+            //---------------Execute Test ----------------------
+            sut._RunOnce_();
+
+            //---------------Test Result -----------------------
+            simpleLoggerFacade.Received(1).LogFatal(Arg.Is<string>(s => s.StartsWith($"Exception whilst applying block lists: {expected}")));
+        }
+
+
+        [Test]
         public void Stop_ShouldResolveHostBlockCoordinator_FromContainer()
         {
             //---------------Set up test pack-------------------
