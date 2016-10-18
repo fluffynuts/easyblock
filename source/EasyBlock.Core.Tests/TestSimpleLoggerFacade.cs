@@ -1,4 +1,5 @@
 ﻿using System;
+using EasyBlock.Core.Implementations.IO;
 using NSubstitute;
 using NUnit.Framework;
 using PeanutButter.ServiceShell;

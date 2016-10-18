@@ -1,4 +1,5 @@
 using System.Reflection;
+using EasyBlock.Core.Extensions;
 
 namespace EasyBlock.Core
 {

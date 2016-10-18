@@ -1,4 +1,5 @@
 using System.Collections;
+using EasyBlock.Core.Interfaces.IO.HostFiles;
 
 namespace EasyBlock.Core.Tests
 {

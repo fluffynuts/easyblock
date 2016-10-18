@@ -2,6 +2,16 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using EasyBlock.Core.Implementations;
+using EasyBlock.Core.Implementations.IO.HostFiles;
+using EasyBlock.Core.Interfaces;
+using EasyBlock.Core.Interfaces.Caching;
+using EasyBlock.Core.Interfaces.Downloading;
+using EasyBlock.Core.Interfaces.IO;
+using EasyBlock.Core.Interfaces.IO.HostFiles;
+using EasyBlock.Core.Interfaces.IO.Settings;
+using EasyBlock.Core.Interfaces.IO.TextReader;
+using EasyBlock.Core.Interfaces.IO.TextWriter;
 using NSubstitute;
 using NUnit.Framework;
 using PeanutButter.TestUtils.Generic;
@@ -48,6 +58,7 @@ namespace EasyBlock.Core.Tests
         }
 
         [Test]
+        [Ignore("Discovery test")]
         public void Discovery_DealingWithEnvironmentVariableExpansionInStrings()
         {
             //---------------Set up test pack-------------------

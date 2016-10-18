@@ -78,32 +78,41 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExecutingAssemblyPathFinder.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="BlocklistCacheManager.cs" />
-    <Compile Include="CacheFilenameGenerator.cs" />
+    <Compile Include="Implementations\Caching\FileInfoRetriever.cs" />
+    <Compile Include="Interfaces\Caching\IFileInfoRetriever.cs" />
+    <Compile Include="Interfaces\HostFiles\IHostFileFactory.cs" />
+    <Compile Include="Interfaces\HostFiles\IHostFileLine.cs" />
+    <Compile Include="Interfaces\HostFiles\IHostFile.cs" />
+    <Compile Include="Interfaces\IHostBlockCoordinator.cs" />
+    <Compile Include="Interfaces\Caching\ICacheFilenameGenerator.cs" />
+    <Compile Include="Implementations\Settings\Settings.cs" />
+    <Compile Include="Implementations\Caching\BlocklistCacheManager.cs" />
+    <Compile Include="Implementations\Caching\CacheFilenameGenerator.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="DownloadResult.cs" />
-    <Compile Include="FileDownloader.cs" />
-    <Compile Include="HostFile.cs" />
-    <Compile Include="HostBlockCoordinator.cs" />
-    <Compile Include="HostFileFactory.cs" />
-    <Compile Include="HostFileLine.cs" />
-    <Compile Include="ISettings.cs" />
-    <Compile Include="IBlocklistCacheManager.cs" />
-    <Compile Include="IDownloadResult.cs" />
-    <Compile Include="IFileDownloader.cs" />
-    <Compile Include="ITextFileReader.cs" />
-    <Compile Include="ITextFileWriter.cs" />
+    <Compile Include="Implementations\Downloading\DownloadResult.cs" />
+    <Compile Include="Implementations\Downloading\FileDownloader.cs" />
+    <Compile Include="Implementations\HostFiles\HostFile.cs" />
+    <Compile Include="Implementations\HostBlockCoordinator.cs" />
+    <Compile Include="Implementations\HostFiles\HostFileFactory.cs" />
+    <Compile Include="Implementations\HostFiles\HostFileLine.cs" />
+    <Compile Include="Interfaces\Settings\ISettings.cs" />
+    <Compile Include="Interfaces\Caching\IBlocklistCacheManager.cs" />
+    <Compile Include="Interfaces\Downloading\IDownloadResult.cs" />
+    <Compile Include="Interfaces\Downloading\IFileDownloader.cs" />
+    <Compile Include="Interfaces\TextReader\ITextFileReader.cs" />
+    <Compile Include="Interfaces\TextWriter\ITextFileWriter.cs" />
+    <Compile Include="Interfaces\ISimpleLoggerFacade.cs" />
+    <Compile Include="Interfaces\TextReader\ITextFileReaderFactory.cs" />
+    <Compile Include="Interfaces\TextWriter\ITextFileWriterFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingsFactory.cs" />
-    <Compile Include="SimpleLoggerFacade.cs" />
-    <Compile Include="StarterConfigGenerator.cs" />
-    <Compile Include="StringExtensions.cs" />
-    <Compile Include="TextFileReader.cs" />
-    <Compile Include="TextFileReaderExtensions.cs" />
-    <Compile Include="TextFileReaderFactory.cs" />
-    <Compile Include="TextFileWriter.cs" />
-    <Compile Include="TextFileWriterFactory.cs" />
+    <Compile Include="Implementations\Logging\SimpleLoggerFacade.cs" />
+    <Compile Include="Implementations\Settings\StarterConfigGenerator.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Implementations\TextReader\TextFileReader.cs" />
+    <Compile Include="Extensions\TextFileReaderExtensions.cs" />
+    <Compile Include="Implementations\TextReader\TextFileReaderFactory.cs" />
+    <Compile Include="Implementations\TextWriter\TextFileWriter.cs" />
+    <Compile Include="Implementations\TextWriter\TextFileWriterFactory.cs" />
     <Compile Include="WindsorBootstrapper.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +122,7 @@
   <ItemGroup>
     <Content Include="README.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
