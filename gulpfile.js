@@ -13,7 +13,8 @@
  *
  * To add or change tasks, do so one task per file in the gulp-tasks folder
  */
-var fs = require('fs');
+var fs = require('fs'),
+    debug = require('debug')('gulpfile');
 var gulpTasksFolder = 'gulp-tasks'; // if you cloned elsewhere, you'll need to modify this
 global.requireModule = function(module) {
     var modulePath = ['.', gulpTasksFolder, 'modules', module].join('/');
@@ -31,10 +32,34 @@ if (!fs.existsSync('package.json')) {
 try {
     var requireDir = require('require-dir');
     requireDir('gulp-tasks');
-    var overridesFolder = 'override-tasks';
-    if (fs.existsSync(overridesFolder)) {
-        requireDir(overridesFolder);
-    }
+    ['override-tasks', 'local-tasks'].forEach(function(dirname) {
+        if (fs.existsSync(dirname)) {
+            requireDir(dirname);
+        }
+    });
 } catch (e) {
+  console.log(e);
+    if (shouldDump(e)) {
+      console.error(e);
+    } else {
+      if (!process.env.DEBUG) {
+        console.log("Error occurred. For more info, set the DEBUG environment variable (eg set DEBUG=*).")
+      }
+    }
     process.exit(1);
+}
+
+function shouldDump(e) {
+  return process.env.ALWAYS_DUMP_GULP_ERRORS || probablyNotReportedByGulp(e);
+}
+
+function probablyNotReportedByGulp(e) {
+  var message = (e || "").toString().toLowerCase();
+  return [
+    "cannot find module",
+    "referenceerror",
+    "syntaxerror"
+  ].reduce((acc, cur) => {
+    return acc || message.indexOf(cur) > -1;
+  }, false);
 }
