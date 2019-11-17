@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using EasyBlock.Core.Interfaces.IO.HostFiles;
+using EasyBlock.Core.Interfaces.HostFiles;
 using NSubstitute;
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.TestUtils
 {
     public static class CollectionOfHostLinesExtensions
     {

@@ -1,4 +1,4 @@
-﻿namespace EasyBlock.Core.Interfaces.IO.TextReader
+﻿namespace EasyBlock.Core.Interfaces.TextReader
 {
     public interface ITextFileReaderFactory
     {

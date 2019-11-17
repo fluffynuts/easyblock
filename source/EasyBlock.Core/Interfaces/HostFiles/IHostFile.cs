@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using EasyBlock.Core.Interfaces.IO.TextReader;
+using EasyBlock.Core.Interfaces.TextReader;
 
-namespace EasyBlock.Core.Interfaces.IO.HostFiles
+namespace EasyBlock.Core.Interfaces.HostFiles
 {
     public interface IHostFile
     {

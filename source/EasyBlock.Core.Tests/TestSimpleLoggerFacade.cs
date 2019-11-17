@@ -1,5 +1,5 @@
 ﻿using System;
-using EasyBlock.Core.Implementations.IO;
+using EasyBlock.Core.Implementations.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using PeanutButter.ServiceShell;

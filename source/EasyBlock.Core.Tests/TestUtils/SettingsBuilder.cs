@@ -1,9 +1,10 @@
-using EasyBlock.Core.Interfaces.IO.Settings;
+using EasyBlock.Core.Interfaces.Settings;
 using NSubstitute;
 using PeanutButter.RandomGenerators;
+
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.TestUtils
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class SettingsBuilder: GenericBuilder<SettingsBuilder, ISettings>

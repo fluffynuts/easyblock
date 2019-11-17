@@ -243,3 +243,5 @@ _Pvt_Extensions
 *.sln.iml
 buildreports
 tools
+*.swp
+*.swo

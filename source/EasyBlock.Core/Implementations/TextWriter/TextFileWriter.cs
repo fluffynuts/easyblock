@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using EasyBlock.Core.Interfaces.IO.TextWriter;
+using EasyBlock.Core.Interfaces.TextWriter;
 using PeanutButter.Utils;
 
-namespace EasyBlock.Core.Implementations.IO.TextWriter
+namespace EasyBlock.Core.Implementations.TextWriter
 {
     public class TextFileWriter: ITextFileWriter
     {
@@ -44,7 +44,7 @@ namespace EasyBlock.Core.Implementations.IO.TextWriter
             using (var writer = new StreamWriter(path))
             {
                 _lines.Take(_lines.Count - 1)
-                    .ForEach(writer.WriteLine);
+                    .ForEach(l => writer.WriteLine(l));
                 writer.Write(_lines.Last());
             }
         }

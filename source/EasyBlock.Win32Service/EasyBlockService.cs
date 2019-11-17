@@ -3,8 +3,7 @@ using System.Diagnostics;
 using Castle.Windsor;
 using EasyBlock.Core;
 using EasyBlock.Core.Interfaces;
-using EasyBlock.Core.Interfaces.IO;
-using EasyBlock.Core.Interfaces.IO.Settings;
+using EasyBlock.Core.Interfaces.Settings;
 using PeanutButter.ServiceShell;
 
 namespace EasyBlock.Win32Service

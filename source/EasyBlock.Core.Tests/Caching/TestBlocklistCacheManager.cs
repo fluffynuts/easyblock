@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using EasyBlock.Core.Extensions;
 using EasyBlock.Core.Implementations.Caching;
-using EasyBlock.Core.Implementations.IO.TextReader;
+using EasyBlock.Core.Implementations.TextReader;
 using EasyBlock.Core.Interfaces.Caching;
-using EasyBlock.Core.Interfaces.IO.Settings;
-using EasyBlock.Core.Interfaces.IO.TextReader;
+using EasyBlock.Core.Interfaces.Settings;
+using EasyBlock.Core.Interfaces.TextReader;
 using NSubstitute;
 using NUnit.Framework;
-using static PeanutButter.RandomGenerators.RandomValueGen;
 using PeanutButter.TestUtils.Generic;
 using PeanutButter.Utils;
+using static PeanutButter.RandomGenerators.RandomValueGen;
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.Caching
 {
     [TestFixture]
     public class TestBlocklistCacheManager

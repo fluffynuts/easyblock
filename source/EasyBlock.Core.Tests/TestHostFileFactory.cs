@@ -1,7 +1,8 @@
-﻿using EasyBlock.Core.Implementations.IO.HostFiles;
-using EasyBlock.Core.Interfaces.IO.HostFiles;
-using EasyBlock.Core.Interfaces.IO.TextReader;
-using EasyBlock.Core.Interfaces.IO.TextWriter;
+﻿using EasyBlock.Core.Implementations.HostFiles;
+using EasyBlock.Core.Interfaces.HostFiles;
+using EasyBlock.Core.Interfaces.TextReader;
+using EasyBlock.Core.Interfaces.TextWriter;
+using EasyBlock.Core.Tests.Extensions;
 using NSubstitute;
 using NUnit.Framework;
 

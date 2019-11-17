@@ -1,13 +1,13 @@
 using System;
 using System.IO;
-using EasyBlock.Core.Implementations.IO.TextWriter;
-using EasyBlock.Core.Interfaces.IO.TextWriter;
+using EasyBlock.Core.Implementations.TextWriter;
+using EasyBlock.Core.Interfaces.TextWriter;
 using NUnit.Framework;
 using PeanutButter.RandomGenerators;
 using PeanutButter.TestUtils.Generic;
 using PeanutButter.Utils;
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.TextWriter
 {
     [TestFixture]
     public class TestTextFileWriterFactory

@@ -1,14 +1,14 @@
 ﻿using System.IO;
 using System.Linq;
 using EasyBlock.Core.Extensions;
-using EasyBlock.Core.Implementations.IO.TextReader;
-using EasyBlock.Core.Interfaces.IO.TextReader;
+using EasyBlock.Core.Implementations.TextReader;
+using EasyBlock.Core.Interfaces.TextReader;
 using NUnit.Framework;
 using PeanutButter.TestUtils.Generic;
 using PeanutButter.Utils;
 using static PeanutButter.RandomGenerators.RandomValueGen;
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.TextReader
 {
     [TestFixture]
     public class TestTextFileReaderFactory

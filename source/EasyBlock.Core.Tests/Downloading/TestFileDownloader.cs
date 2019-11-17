@@ -7,7 +7,7 @@ using PeanutButter.SimpleHTTPServer;
 using PeanutButter.Utils;
 using static PeanutButter.RandomGenerators.RandomValueGen;
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.Downloading
 {
     [TestFixture]
     public class TestFileDownloader

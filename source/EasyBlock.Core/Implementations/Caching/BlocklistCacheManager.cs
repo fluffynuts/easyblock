@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using EasyBlock.Core.Interfaces.Caching;
-using EasyBlock.Core.Interfaces.IO.Settings;
-using EasyBlock.Core.Interfaces.IO.TextReader;
+using EasyBlock.Core.Interfaces.Settings;
+using EasyBlock.Core.Interfaces.TextReader;
 
 namespace EasyBlock.Core.Implementations.Caching
 {

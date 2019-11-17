@@ -1,7 +1,7 @@
-﻿using EasyBlock.Core.Interfaces.IO.TextReader;
-using EasyBlock.Core.Interfaces.IO.TextWriter;
+﻿using EasyBlock.Core.Interfaces.TextReader;
+using EasyBlock.Core.Interfaces.TextWriter;
 
-namespace EasyBlock.Core.Interfaces.IO.HostFiles
+namespace EasyBlock.Core.Interfaces.HostFiles
 {
     public interface IHostFileFactory
     {

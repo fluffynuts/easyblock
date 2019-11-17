@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using EasyBlock.Core.Implementations.IO.HostFiles;
-using EasyBlock.Core.Interfaces.IO.HostFiles;
-using EasyBlock.Core.Interfaces.IO.TextReader;
-using EasyBlock.Core.Interfaces.IO.TextWriter;
+using EasyBlock.Core.Implementations.HostFiles;
+using EasyBlock.Core.Interfaces.HostFiles;
+using EasyBlock.Core.Interfaces.TextReader;
+using EasyBlock.Core.Interfaces.TextWriter;
+using EasyBlock.Core.Tests.Extensions;
+using EasyBlock.Core.Tests.TestUtils;
 using NSubstitute;
 using NUnit.Framework;
 using PeanutButter.TestUtils.Generic;
 using PeanutButter.Utils;
 using static PeanutButter.RandomGenerators.RandomValueGen;
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.HostFiles
 {
     [TestFixture]
     public class TestHostFIle

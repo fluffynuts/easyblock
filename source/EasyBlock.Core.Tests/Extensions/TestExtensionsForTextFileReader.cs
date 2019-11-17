@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using EasyBlock.Core.Interfaces.IO.TextReader;
+using EasyBlock.Core.Interfaces.TextReader;
 using NSubstitute;
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.Extensions
 {
     public static class TestExtensionsForTextFileReader
     {

@@ -2,15 +2,14 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using EasyBlock.Core.Implementations.IO.Settings;
-using EasyBlock.Core.Interfaces.IO.Settings;
+using EasyBlock.Core.Interfaces.Settings;
 using NUnit.Framework;
 using PeanutButter.INIFile;
 using PeanutButter.TestUtils.Generic;
 using static PeanutButter.RandomGenerators.RandomValueGen;
 using static EasyBlock.Core.Constants;
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.Settings
 {
     [TestFixture]
     public class TestSettings
@@ -19,7 +18,7 @@ namespace EasyBlock.Core.Tests
         public void Type_ShouldImplement_IAppSettings()
         {
             //---------------Set up test pack-------------------
-            var sut = typeof(Settings);
+            var sut = typeof(Implementations.Settings.Settings);
 
             //---------------Assert Precondition----------------
 
@@ -37,7 +36,7 @@ namespace EasyBlock.Core.Tests
             //---------------Assert Precondition----------------
 
             //---------------Execute Test ----------------------
-            ConstructorTestUtils.ShouldExpectNonNullParameterFor<Settings>(parameterName, parameterType);
+            ConstructorTestUtils.ShouldExpectNonNullParameterFor<Implementations.Settings.Settings>(parameterName, parameterType);
 
             //---------------Test Result -----------------------
         }
@@ -377,7 +376,7 @@ namespace EasyBlock.Core.Tests
 
         private ISettings Create(IINIFile iniFile)
         {
-            return new Settings(iniFile);
+            return new Implementations.Settings.Settings(iniFile);
         }
     }
 }

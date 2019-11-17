@@ -1,10 +1,9 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using EasyBlock.Core.Implementations;
-using EasyBlock.Core.Implementations.IO;
-using EasyBlock.Core.Implementations.IO.Settings;
+using EasyBlock.Core.Implementations.Logging;
+using EasyBlock.Core.Implementations.Settings;
 using EasyBlock.Core.Interfaces;
-using EasyBlock.Core.Interfaces.IO;
 using PeanutButter.INIFile;
 using PeanutButter.Utils.Windsor;
 

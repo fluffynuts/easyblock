@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using EasyBlock.Core.Interfaces.IO.HostFiles;
+using EasyBlock.Core.Interfaces.HostFiles;
 
-namespace EasyBlock.Core.Implementations.IO.HostFiles
+namespace EasyBlock.Core.Implementations.HostFiles
 {
     public class HostFileLine: IHostFileLine
     {

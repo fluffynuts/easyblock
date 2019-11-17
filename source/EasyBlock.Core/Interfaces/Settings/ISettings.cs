@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace EasyBlock.Core.Interfaces.IO.Settings
+namespace EasyBlock.Core.Interfaces.Settings
 {
     public interface ISettings
     {

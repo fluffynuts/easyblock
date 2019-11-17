@@ -3,13 +3,14 @@ using System.IO;
 using PeanutButter.INIFile;
 using PeanutButter.Utils;
 
-namespace EasyBlock.Core.Implementations.IO.Settings
+namespace EasyBlock.Core.Implementations.Settings
 {
     public class StarterConfigGenerator
     {
-        public string IniFilePath => Path.Combine(ExecutingAssemblyPathFinder.GetExecutingAssemblyFolder(), 
-                                                    Constants.CONFIG_FILE);
-        private static readonly string[] DefaultSources  = new[]
+        public string IniFilePath => Path.Combine(ExecutingAssemblyPathFinder.GetExecutingAssemblyFolder(),
+            Constants.CONFIG_FILE);
+
+        private static readonly string[] DefaultSources = new[]
         {
             "https://adaway.org/hosts.txt",
             "http://winhelp2002.mvps.org/hosts.txt",
@@ -20,11 +21,23 @@ namespace EasyBlock.Core.Implementations.IO.Settings
         public void CreateConfigIfNotFound()
         {
             if (File.Exists(IniFilePath))
+            {
                 return;
+            }
+
             var iniFile = new INIFile(IniFilePath);
             SetDefaultSettingsOn(iniFile);
             SetDefaultSourcesOn(iniFile);
+            CreateEmptySection(iniFile, Constants.Sections.BLACKLIST);
+            CreateEmptySection(iniFile, Constants.Sections.WHITELIST);
             iniFile.Persist();
+        }
+
+        private void CreateEmptySection(
+            IINIFile iniFile,
+            string sectionName)
+        {
+            iniFile.AddSection(sectionName);
         }
 
         private void SetDefaultSourcesOn(INIFile iniFile)
@@ -42,6 +55,5 @@ namespace EasyBlock.Core.Implementations.IO.Settings
                 { Constants.Keys.REFRESH_INTERVAL_IN_MINUTES, Constants.Defaults.ONE_DAY }
             }.ForEach(kvp => iniFile[Constants.Sections.SETTINGS][kvp.Key] = kvp.Value);
         }
-
     }
 }

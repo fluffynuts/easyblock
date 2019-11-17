@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 using EasyBlock.Core.Interfaces;
 using EasyBlock.Core.Interfaces.Caching;
 using EasyBlock.Core.Interfaces.Downloading;
-using EasyBlock.Core.Interfaces.IO;
-using EasyBlock.Core.Interfaces.IO.HostFiles;
-using EasyBlock.Core.Interfaces.IO.Settings;
-using EasyBlock.Core.Interfaces.IO.TextReader;
-using EasyBlock.Core.Interfaces.IO.TextWriter;
+using EasyBlock.Core.Interfaces.HostFiles;
+using EasyBlock.Core.Interfaces.Settings;
+using EasyBlock.Core.Interfaces.TextReader;
+using EasyBlock.Core.Interfaces.TextWriter;
 using PeanutButter.Utils;
 
 namespace EasyBlock.Core.Implementations

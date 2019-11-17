@@ -1,10 +1,10 @@
-﻿using EasyBlock.Core.Implementations.IO.HostFiles;
-using EasyBlock.Core.Interfaces.IO.HostFiles;
+﻿using EasyBlock.Core.Implementations.HostFiles;
+using EasyBlock.Core.Interfaces.HostFiles;
 using NUnit.Framework;
 using PeanutButter.TestUtils.Generic;
 using static PeanutButter.RandomGenerators.RandomValueGen;
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.HostFiles
 {
     [TestFixture]
     public class TestHostFileLine

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using EasyBlock.Core.Interfaces.IO.TextReader;
+using EasyBlock.Core.Interfaces.TextReader;
 
 namespace EasyBlock.Core.Extensions
 {

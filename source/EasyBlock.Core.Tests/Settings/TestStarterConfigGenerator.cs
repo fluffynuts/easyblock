@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using EasyBlock.Core.Implementations.IO.Settings;
+using EasyBlock.Core.Implementations.Settings;
 using NUnit.Framework;
 using PeanutButter.INIFile;
 using PeanutButter.Utils;
@@ -11,7 +11,7 @@ using Keys = EasyBlock.Core.Constants.Keys;
 using Defaults = EasyBlock.Core.Constants.Defaults;
 using static PeanutButter.RandomGenerators.RandomValueGen;
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.Settings
 {
     [TestFixture]
     public class TestStarterConfigGenerator
@@ -67,7 +67,10 @@ namespace EasyBlock.Core.Tests
 
             //---------------Test Result -----------------------
             var ini = new INIFile(sut.IniFilePath);
-            var allUrls = ini[Sections.SOURCES].Keys.Select(k => ini[Sections.SOURCES][k] == null ? k : k + "=" + ini[Sections.SOURCES][k]);
+            var allUrls = ini[Sections.SOURCES]
+                .Keys.Select(k => ini[Sections.SOURCES][k] == null 
+                    ? k 
+                    : k + "=" + ini[Sections.SOURCES][k]);
             Assert.IsTrue(allUrls.Contains(url));
         }
 

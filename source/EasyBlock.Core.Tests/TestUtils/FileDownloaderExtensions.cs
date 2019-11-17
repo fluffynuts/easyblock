@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using EasyBlock.Core.Interfaces.Downloading;
 using NSubstitute;
+
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.TestUtils
 {
     public static class FileDownloaderExtensions
     {

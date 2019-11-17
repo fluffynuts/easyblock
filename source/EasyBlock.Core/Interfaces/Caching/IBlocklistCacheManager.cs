@@ -1,4 +1,4 @@
-using EasyBlock.Core.Interfaces.IO.TextReader;
+using EasyBlock.Core.Interfaces.TextReader;
 
 namespace EasyBlock.Core.Interfaces.Caching
 {

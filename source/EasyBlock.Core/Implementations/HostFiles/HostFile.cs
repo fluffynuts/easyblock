@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using EasyBlock.Core.Extensions;
-using EasyBlock.Core.Interfaces.IO.HostFiles;
-using EasyBlock.Core.Interfaces.IO.TextReader;
-using EasyBlock.Core.Interfaces.IO.TextWriter;
+using EasyBlock.Core.Interfaces.HostFiles;
+using EasyBlock.Core.Interfaces.TextReader;
+using EasyBlock.Core.Interfaces.TextWriter;
 using PeanutButter.Utils;
 
-namespace EasyBlock.Core.Implementations.IO.HostFiles
+namespace EasyBlock.Core.Implementations.HostFiles
 {
     public class HostFile: IHostFile
     {

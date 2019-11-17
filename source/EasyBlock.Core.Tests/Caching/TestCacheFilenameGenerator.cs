@@ -3,14 +3,14 @@ using System.IO;
 using System.Reflection;
 using EasyBlock.Core.Implementations.Caching;
 using EasyBlock.Core.Interfaces.Caching;
-using EasyBlock.Core.Interfaces.IO.Settings;
+using EasyBlock.Core.Interfaces.Settings;
 using NSubstitute;
 using NUnit.Framework;
 using PeanutButter.TestUtils.Generic;
 using PeanutButter.Utils;
 using static PeanutButter.RandomGenerators.RandomValueGen;
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.Caching
 {
     [TestFixture]
     public class TestCacheFilenameGenerator

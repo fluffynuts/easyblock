@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using EasyBlock.Core.Interfaces.IO;
+using EasyBlock.Core.Interfaces;
 using PeanutButter.ServiceShell;
 
-namespace EasyBlock.Core.Implementations.IO
+namespace EasyBlock.Core.Implementations.Logging
 {
     public class SimpleLoggerFacade: ISimpleLoggerFacade
     {

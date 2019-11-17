@@ -1,6 +1,6 @@
 using PeanutButter.ServiceShell;
 
-namespace EasyBlock.Core.Interfaces.IO
+namespace EasyBlock.Core.Interfaces
 {
     public interface ISimpleLoggerFacade: ISimpleLogger
     {

@@ -1,6 +1,6 @@
-﻿using EasyBlock.Core.Interfaces.IO.TextReader;
+﻿using EasyBlock.Core.Interfaces.TextReader;
 
-namespace EasyBlock.Core.Implementations.IO.TextReader
+namespace EasyBlock.Core.Implementations.TextReader
 {
     public class TextFileReaderFactory: ITextFileReaderFactory
     {

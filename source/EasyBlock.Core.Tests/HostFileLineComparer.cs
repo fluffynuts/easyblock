@@ -1,5 +1,5 @@
 using System.Collections;
-using EasyBlock.Core.Interfaces.IO.HostFiles;
+using EasyBlock.Core.Interfaces.HostFiles;
 
 namespace EasyBlock.Core.Tests
 {

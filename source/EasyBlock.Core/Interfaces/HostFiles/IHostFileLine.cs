@@ -1,4 +1,4 @@
-﻿namespace EasyBlock.Core.Interfaces.IO.HostFiles
+﻿namespace EasyBlock.Core.Interfaces.HostFiles
 {
     public interface IHostFileLine
     {

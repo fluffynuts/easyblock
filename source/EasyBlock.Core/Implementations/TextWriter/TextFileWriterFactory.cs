@@ -1,6 +1,6 @@
-﻿using EasyBlock.Core.Interfaces.IO.TextWriter;
+﻿using EasyBlock.Core.Interfaces.TextWriter;
 
-namespace EasyBlock.Core.Implementations.IO.TextWriter
+namespace EasyBlock.Core.Implementations.TextWriter
 {
     public class TextFileWriterFactory: ITextFileWriterFactory
     {

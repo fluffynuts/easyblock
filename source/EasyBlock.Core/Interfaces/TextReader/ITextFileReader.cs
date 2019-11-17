@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EasyBlock.Core.Interfaces.IO.TextReader
+namespace EasyBlock.Core.Interfaces.TextReader
 {
     public interface ITextFileReader: IDisposable
     {

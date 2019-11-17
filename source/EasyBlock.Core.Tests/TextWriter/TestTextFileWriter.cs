@@ -1,14 +1,14 @@
 using System;
 using System.IO;
-using EasyBlock.Core.Implementations.IO.TextWriter;
-using EasyBlock.Core.Interfaces.IO.TextWriter;
+using EasyBlock.Core.Implementations.TextWriter;
+using EasyBlock.Core.Interfaces.TextWriter;
 using NUnit.Framework;
 using PeanutButter.TestUtils.Generic;
 using PeanutButter.Utils;
 using static PeanutButter.RandomGenerators.RandomValueGen;
 // ReSharper disable PossibleMultipleEnumeration
 
-namespace EasyBlock.Core.Tests
+namespace EasyBlock.Core.Tests.TextWriter
 {
     [TestFixture]
     public class TestTextFileWriter

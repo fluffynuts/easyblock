@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using Castle.Components.DictionaryAdapter;
 using EasyBlock.Core.Extensions;
-using EasyBlock.Core.Interfaces.IO.Settings;
+using EasyBlock.Core.Interfaces.Settings;
 using PeanutButter.INIFile;
 
-namespace EasyBlock.Core.Implementations.IO.Settings
+namespace EasyBlock.Core.Implementations.Settings
 {
     public class Settings: ISettings
     {
@@ -59,7 +59,7 @@ namespace EasyBlock.Core.Implementations.IO.Settings
             target.AddRange(lines);
         }
 
-        private string GetFullLine(string key, Dictionary<string, string> section)
+        private string GetFullLine(string key, IDictionary<string, string> section)
         {
             var value = section[key];
             return value == null ? key : key + "=" + value;

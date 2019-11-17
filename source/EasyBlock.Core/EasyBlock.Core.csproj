@@ -1,134 +1,30 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{555A5EB3-5A71-421D-B9A5-780EB2E255A3}</ProjectGuid>
+    <TargetFramework>net452</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EasyBlock.Core</RootNamespace>
-    <AssemblyName>EasyBlock.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Castle.Windsor, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PeanutButter.INI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.INI.1.2.19\lib\net45\PeanutButter.INI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PeanutButter.ServiceShell, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.ServiceShell.1.2.19\lib\net45\PeanutButter.ServiceShell.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PeanutButter.Utils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.Utils.1.2.19\lib\net45\PeanutButter.Utils.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PeanutButter.Utils.Windsor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.Utils.Windsor.1.2.19\lib\net45\PeanutButter.Utils.Windsor.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PeanutButter.Win32ServiceControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PeanutButter.WindowsServiceManagement.1.2.19\lib\net45\PeanutButter.Win32ServiceControl.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ExecutingAssemblyPathFinder.cs" />
-    <Compile Include="Implementations\Caching\FileInfoRetriever.cs" />
-    <Compile Include="Interfaces\Caching\IFileInfoRetriever.cs" />
-    <Compile Include="Interfaces\HostFiles\IHostFileFactory.cs" />
-    <Compile Include="Interfaces\HostFiles\IHostFileLine.cs" />
-    <Compile Include="Interfaces\HostFiles\IHostFile.cs" />
-    <Compile Include="Interfaces\IHostBlockCoordinator.cs" />
-    <Compile Include="Interfaces\Caching\ICacheFilenameGenerator.cs" />
-    <Compile Include="Implementations\Settings\Settings.cs" />
-    <Compile Include="Implementations\Caching\BlocklistCacheManager.cs" />
-    <Compile Include="Implementations\Caching\CacheFilenameGenerator.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="Implementations\Downloading\DownloadResult.cs" />
-    <Compile Include="Implementations\Downloading\FileDownloader.cs" />
-    <Compile Include="Implementations\HostFiles\HostFile.cs" />
-    <Compile Include="Implementations\HostBlockCoordinator.cs" />
-    <Compile Include="Implementations\HostFiles\HostFileFactory.cs" />
-    <Compile Include="Implementations\HostFiles\HostFileLine.cs" />
-    <Compile Include="Interfaces\Settings\ISettings.cs" />
-    <Compile Include="Interfaces\Caching\IBlocklistCacheManager.cs" />
-    <Compile Include="Interfaces\Downloading\IDownloadResult.cs" />
-    <Compile Include="Interfaces\Downloading\IFileDownloader.cs" />
-    <Compile Include="Interfaces\TextReader\ITextFileReader.cs" />
-    <Compile Include="Interfaces\TextWriter\ITextFileWriter.cs" />
-    <Compile Include="Interfaces\ISimpleLoggerFacade.cs" />
-    <Compile Include="Interfaces\TextReader\ITextFileReaderFactory.cs" />
-    <Compile Include="Interfaces\TextWriter\ITextFileWriterFactory.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Implementations\Logging\SimpleLoggerFacade.cs" />
-    <Compile Include="Implementations\Settings\StarterConfigGenerator.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Implementations\TextReader\TextFileReader.cs" />
-    <Compile Include="Extensions\TextFileReaderExtensions.cs" />
-    <Compile Include="Implementations\TextReader\TextFileReaderFactory.cs" />
-    <Compile Include="Implementations\TextWriter\TextFileWriter.cs" />
-    <Compile Include="Implementations\TextWriter\TextFileWriterFactory.cs" />
-    <Compile Include="WindsorBootstrapper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.txt" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Castle.Core" Version="4.4.0" />
+    <PackageReference Include="Castle.Windsor" Version="5.0.1" />
+    <PackageReference Include="CommandLineParser" Version="1.9.71" />
+    <PackageReference Include="log4net" Version="2.0.5" />
+    <PackageReference Include="PeanutButter.INI" Version="1.2.316" />
+    <PackageReference Include="PeanutButter.ServiceShell" Version="1.2.316" />
+    <PackageReference Include="PeanutButter.Utils" Version="1.2.316" />
+    <PackageReference Include="PeanutButter.Utils.Windsor" Version="1.2.316" />
+    <PackageReference Include="PeanutButter.WindowsServiceManagement" Version="1.2.316" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
+  </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace EasyBlock.Core.Interfaces.IO.TextWriter
+﻿namespace EasyBlock.Core.Interfaces.TextWriter
 {
     public interface ITextFileWriterFactory
     {
