@@ -4,7 +4,7 @@
         "gulp": "cross-env BUILD_TOOLS_FOLDER=tools gulp",
         "test": "run-s \"gulp test-dotnet\"",
         "build-release": "cross-env BUILD_CONFIGURATION=Release run-s \"gulp build\"",
-        "prerelase": "run-s build-release",
+        "prerelease": "run-s build-release",
         "release": "run-s create-release-zip",
         "create-release-zip": "run-s \"gulp create-release-zip\""
     },
