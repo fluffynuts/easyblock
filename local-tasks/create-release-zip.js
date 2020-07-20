@@ -1,7 +1,6 @@
 const 
     gulp = requireModule("gulp-with-help"),
     editXml = require("gulp-edit-xml"),
-    fs = require("fs").promises,
     zipFolder = require("zip-folder");
 
 function findVersionIn(propertyGroup) {
